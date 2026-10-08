@@ -89,6 +89,7 @@
               <input
                 type="text"
                 name="cardName"
+                #cardNameInput
                 class="input"
                 [class.input-invalid]="submitted && !card.cardName.trim()"
                 [(ngModel)]="card.cardName"
@@ -101,7 +102,7 @@
                 "
               />
               @if (submitted && !card.cardName.trim()) {
-                <span id="card-name-error" class="field-error"
+                <span id="card-name-error" class="field-error" role="alert"
                   >Introduce el nombre de la tarjeta.</span
                 >
               }
@@ -112,6 +113,7 @@
               <input
                 type="text"
                 name="cardNumber"
+                #cardNumberInput
                 class="input"
                 [class.input-invalid]="submitted && !card.cardNumber.trim()"
                 [(ngModel)]="card.cardNumber"
@@ -125,7 +127,7 @@
                 "
               />
               @if (submitted && !card.cardNumber.trim()) {
-                <span id="card-number-error" class="field-error"
+                <span id="card-number-error" class="field-error" role="alert"
                   >Introduce el número de tarjeta.</span
                 >
               }
@@ -137,6 +139,7 @@
                 <input
                   type="text"
                   name="expiry"
+                  #expiryInput
                   class="input"
                   [class.input-invalid]="submitted && !card.expiry.trim()"
                   [(ngModel)]="card.expiry"
@@ -147,7 +150,9 @@
                   [attr.aria-describedby]="submitted && !card.expiry.trim() ? 'expiry-error' : null"
                 />
                 @if (submitted && !card.expiry.trim()) {
-                  <span id="expiry-error" class="field-error">Introduce la caducidad.</span>
+                  <span id="expiry-error" class="field-error" role="alert"
+                    >Introduce la caducidad.</span
+                  >
                 }
               </label>
               <label class="field">
@@ -155,6 +160,7 @@
                 <input
                   type="text"
                   name="cvc"
+                  #cvcInput
                   class="input"
                   [class.input-invalid]="submitted && !card.cvc.trim()"
                   [(ngModel)]="card.cvc"
@@ -166,7 +172,7 @@
                   [attr.aria-describedby]="submitted && !card.cvc.trim() ? 'cvc-error' : null"
                 />
                 @if (submitted && !card.cvc.trim()) {
-                  <span id="cvc-error" class="field-error">Introduce el CVC.</span>
+                  <span id="cvc-error" class="field-error" role="alert">Introduce el CVC.</span>
                 }
               </label>
             </div>

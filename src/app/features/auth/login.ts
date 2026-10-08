@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -14,6 +14,9 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  protected readonly emailInput = viewChild<ElementRef<HTMLInputElement>>('emailInput');
+  protected readonly passwordInput = viewChild<ElementRef<HTMLInputElement>>('passwordInput');
+
   protected email = '';
   protected password = '';
   protected submitted = false;
@@ -22,7 +25,14 @@ export class LoginComponent {
 
   protected onSubmit(): void {
     this.submitted = true;
-    if (!this.email || !this.password) return;
+    if (!this.email) {
+      this.emailInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.password) {
+      this.passwordInput()?.nativeElement.focus();
+      return;
+    }
 
     this.loading = true;
     this.error = null;

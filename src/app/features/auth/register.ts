@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -13,6 +13,11 @@ export class RegisterComponent {
   private readonly store = inject(AuthStore);
   private readonly router = inject(Router);
 
+  protected readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  protected readonly emailInput = viewChild<ElementRef<HTMLInputElement>>('emailInput');
+  protected readonly passwordInput = viewChild<ElementRef<HTMLInputElement>>('passwordInput');
+  protected readonly confirmInput = viewChild<ElementRef<HTMLInputElement>>('confirmInput');
+
   protected name = '';
   protected email = '';
   protected password = '';
@@ -23,7 +28,20 @@ export class RegisterComponent {
 
   protected onSubmit(): void {
     this.submitted = true;
-    if (!this.name || !this.email || !this.password || this.password !== this.confirmPassword) {
+    if (!this.name) {
+      this.nameInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.email) {
+      this.emailInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.password || this.password.length < 8) {
+      this.passwordInput()?.nativeElement.focus();
+      return;
+    }
+    if (this.password !== this.confirmPassword) {
+      this.confirmInput()?.nativeElement.focus();
       return;
     }
 

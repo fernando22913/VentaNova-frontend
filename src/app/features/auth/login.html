@@ -48,6 +48,7 @@
               <input
                 type="email"
                 name="email"
+                #emailInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && !email"
                 [(ngModel)]="email"
@@ -59,7 +60,7 @@
               />
             </span>
             @if (submitted && !email) {
-              <span id="email-error" class="field-error">Introduce tu correo.</span>
+              <span id="email-error" class="field-error" role="alert">Introduce tu correo.</span>
             }
           </label>
 
@@ -82,6 +83,7 @@
               <input
                 type="password"
                 name="password"
+                #passwordInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && !password"
                 [(ngModel)]="password"
@@ -93,7 +95,9 @@
               />
             </span>
             @if (submitted && !password) {
-              <span id="password-error" class="field-error">Introduce tu contraseña.</span>
+              <span id="password-error" class="field-error" role="alert"
+                >Introduce tu contraseña.</span
+              >
             }
           </label>
 

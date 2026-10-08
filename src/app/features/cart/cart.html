@@ -67,7 +67,7 @@
                 type="number"
                 min="1"
                 max="99"
-                class="w-10 bg-transparent text-center font-mono text-sm text-cream outline-none"
+                class="w-10 rounded bg-transparent text-center font-mono text-sm text-cream"
                 [value]="item.quantity"
                 (change)="setQuantity(item.productId, $event)"
                 aria-label="Cantidad de {{ item.title }}"

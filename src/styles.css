@@ -12,7 +12,7 @@
   --color-ink-800: #182019;
   --color-ink-700: #243027;
   --color-ink-600: #38473b;
-  --color-ink-500: #4d5f51;
+  --color-ink-500: #74897a;
 
   /* Text */
   --color-cream: #edf2e7;
@@ -76,12 +76,6 @@
     outline: 2px solid var(--color-acid-400);
     outline-offset: 2px;
     border-radius: 2px;
-  }
-
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible {
-    outline: none;
   }
 
   ::-webkit-scrollbar {

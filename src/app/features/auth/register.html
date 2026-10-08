@@ -50,6 +50,7 @@
               <input
                 type="text"
                 name="name"
+                #nameInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && !name"
                 [(ngModel)]="name"
@@ -61,7 +62,7 @@
               />
             </span>
             @if (submitted && !name) {
-              <span id="name-error" class="field-error">Introduce tu nombre.</span>
+              <span id="name-error" class="field-error" role="alert">Introduce tu nombre.</span>
             }
           </label>
 
@@ -84,6 +85,7 @@
               <input
                 type="email"
                 name="email"
+                #emailInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && !email"
                 [(ngModel)]="email"
@@ -95,7 +97,9 @@
               />
             </span>
             @if (submitted && !email) {
-              <span id="register-email-error" class="field-error">Introduce tu correo.</span>
+              <span id="register-email-error" class="field-error" role="alert"
+                >Introduce tu correo.</span
+              >
             }
           </label>
 
@@ -118,6 +122,7 @@
               <input
                 type="password"
                 name="password"
+                #passwordInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && password.length > 0 && password.length < 8"
                 [(ngModel)]="password"
@@ -134,7 +139,7 @@
               />
             </span>
             @if (submitted && password && password.length < 8) {
-              <span id="register-password-error" class="field-error"
+              <span id="register-password-error" class="field-error" role="alert"
                 >La contraseña debe tener al menos 8 caracteres.</span
               >
             }
@@ -159,6 +164,7 @@
               <input
                 type="password"
                 name="confirmPassword"
+                #confirmInput
                 class="input pl-9"
                 [class.input-invalid]="submitted && password !== confirmPassword"
                 [(ngModel)]="confirmPassword"
@@ -172,7 +178,9 @@
               />
             </span>
             @if (submitted && password !== confirmPassword) {
-              <span id="confirm-error" class="field-error">Las contraseñas no coinciden.</span>
+              <span id="confirm-error" class="field-error" role="alert"
+                >Las contraseñas no coinciden.</span
+              >
             }
           </label>
 

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -25,6 +25,11 @@ export class CheckoutComponent {
   protected readonly subtotalCents = this.cart.subtotalCents;
   protected readonly isEmpty = this.cart.isEmpty;
 
+  protected readonly cardNameInput = viewChild<ElementRef<HTMLInputElement>>('cardNameInput');
+  protected readonly cardNumberInput = viewChild<ElementRef<HTMLInputElement>>('cardNumberInput');
+  protected readonly expiryInput = viewChild<ElementRef<HTMLInputElement>>('expiryInput');
+  protected readonly cvcInput = viewChild<ElementRef<HTMLInputElement>>('cvcInput');
+
   protected card: CardDetails = { cardName: '', cardNumber: '', expiry: '', cvc: '' };
   protected submitted = false;
   protected loading = false;
@@ -36,7 +41,24 @@ export class CheckoutComponent {
   protected onSubmit(): void {
     this.submitted = true;
     this.declined.set(false);
-    if (this.isEmpty() || !this.cardDetailsValid()) return;
+    if (this.isEmpty()) return;
+
+    if (!this.card.cardName.trim()) {
+      this.cardNameInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.card.cardNumber.trim()) {
+      this.cardNumberInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.card.expiry.trim()) {
+      this.expiryInput()?.nativeElement.focus();
+      return;
+    }
+    if (!this.card.cvc.trim()) {
+      this.cvcInput()?.nativeElement.focus();
+      return;
+    }
 
     this.loading = true;
     this.error = null;
@@ -83,15 +105,6 @@ export class CheckoutComponent {
   private failWith(error: unknown): void {
     this.loading = false;
     this.error = messageFrom(error);
-  }
-
-  private cardDetailsValid(): boolean {
-    return Boolean(
-      this.card.cardName.trim() &&
-      this.card.cardNumber.trim() &&
-      this.card.expiry.trim() &&
-      this.card.cvc.trim(),
-    );
   }
 }
 
