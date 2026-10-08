@@ -55,7 +55,7 @@ There is no frontend lint step (ESLint is backend-only).
 
 | File | Purpose | API URL |
 |---|---|---|
-| `src/environments/environment.ts` | Production build (default) | `https://bytemarket-api.onrender.com/api/v1` |
+| `src/environments/environment.ts` | Production build (default) | `https://ventanova-api.onrender.com/api/v1` |
 | `src/environments/environment.development.ts` | `ng serve` / development | `http://localhost:3000/api/v1` |
 
 `angular.json` swaps the development file in via `fileReplacements` at serve time; the
