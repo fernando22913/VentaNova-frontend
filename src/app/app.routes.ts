@@ -5,72 +5,72 @@ import { adminGuard, authGuard, guestGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    title: 'ByteMarket — Catálogo',
+    title: 'VentaNova — Catálogo',
     loadComponent: () => import('./features/catalog/catalog').then((m) => m.CatalogComponent),
   },
   {
     path: 'catalog/:slug',
-    title: 'ByteMarket — Producto',
+    title: 'VentaNova — Producto',
     loadComponent: () =>
       import('./features/product-detail/product-detail').then((m) => m.ProductDetailComponent),
   },
   {
     path: 'cart',
-    title: 'ByteMarket — Carrito',
+    title: 'VentaNova — Carrito',
     loadComponent: () => import('./features/cart/cart').then((m) => m.CartComponent),
   },
   {
     path: 'checkout',
-    title: 'ByteMarket — Finalizar compra',
+    title: 'VentaNova — Finalizar compra',
     canActivate: [authGuard],
     loadComponent: () => import('./features/checkout/checkout').then((m) => m.CheckoutComponent),
   },
   {
     path: 'orders',
-    title: 'ByteMarket — Pedidos',
+    title: 'VentaNova — Pedidos',
     canActivate: [authGuard],
     loadComponent: () => import('./features/orders/orders').then((m) => m.OrdersComponent),
   },
   {
     path: 'orders/:id',
-    title: 'ByteMarket — Pedido',
+    title: 'VentaNova — Pedido',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/orders/order-detail').then((m) => m.OrderDetailComponent),
   },
   {
     path: 'library',
-    title: 'ByteMarket — Biblioteca',
+    title: 'VentaNova — Biblioteca',
     canActivate: [authGuard],
     loadComponent: () => import('./features/library/library').then((m) => m.LibraryComponent),
   },
   {
     path: 'login',
-    title: 'ByteMarket — Iniciar sesión',
+    title: 'VentaNova — Iniciar sesión',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/login').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
-    title: 'ByteMarket — Crear cuenta',
+    title: 'VentaNova — Crear cuenta',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/register').then((m) => m.RegisterComponent),
   },
   {
     path: 'account',
-    title: 'ByteMarket — Mi cuenta',
+    title: 'VentaNova — Mi cuenta',
     canActivate: [authGuard],
     loadComponent: () => import('./features/account/account').then((m) => m.AccountComponent),
   },
   {
     path: 'admin',
-    title: 'ByteMarket — Administración',
+    title: 'VentaNova — Administración',
     canActivate: [adminGuard],
     loadComponent: () => import('./features/admin/admin').then((m) => m.AdminPanelComponent),
   },
   {
     path: '**',
-    title: 'ByteMarket — No encontrado',
+    title: 'VentaNova — No encontrado',
     loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFoundComponent),
   },
 ];

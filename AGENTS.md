@@ -1,6 +1,6 @@
 # AGENTS.md
 
-ByteMarket **frontend** — Angular 22 SPA. The API is a separate repository/service, so
+VentaNova **frontend** — Angular 22 SPA. The API is a separate repository/service, so
 this repo only builds and serves the browser app.
 
 ## Commands

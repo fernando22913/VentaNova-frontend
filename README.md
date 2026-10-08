@@ -1,7 +1,7 @@
-# ByteMarket — Frontend
+# VentaNova — Frontend
 
 Angular 22 single-page application (standalone components + signals, Tailwind CSS v4)
-for the ByteMarket digital storefront. This repository is the standalone frontend;
+for the VentaNova digital storefront. This repository is the standalone frontend;
 the API lives in a separate repository.
 
 ## Requirements
