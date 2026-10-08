@@ -1,0 +1,66 @@
+<section class="mx-auto max-w-4xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Tu cuenta</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Mi cuenta</h1>
+    <p class="mt-1.5 text-sm text-mist">Tus datos, tus compras y tus accesos.</p>
+  </div>
+
+  @if (currentUser(); as user) {
+    <div class="mt-8 grid items-start gap-6 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <div class="surface p-6 text-center">
+          <span
+            class="mx-auto grid h-20 w-20 place-items-center rounded-2xl border border-acid-400/40 bg-acid-400/10 font-display text-3xl font-extrabold text-acid-300"
+            aria-hidden="true"
+          >
+            {{ initials() }}
+          </span>
+          <h2 class="mt-4 font-display text-lg font-bold text-cream">{{ user.name }}</h2>
+          <p class="mt-0.5 text-sm text-mist">{{ user.email }}</p>
+          <span class="badge mt-4 border-acid-400/40 bg-acid-400/10 text-acid-300">
+            {{ user.role === 'ADMIN' ? 'Administrador' : 'Cliente' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8">
+        <div class="surface overflow-hidden">
+          <dl class="divide-y divide-ink-800 text-sm">
+            <div class="grid grid-cols-3 gap-4 p-5">
+              <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Nombre</dt>
+              <dd class="col-span-2 font-medium text-cream">{{ user.name }}</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 p-5">
+              <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Correo</dt>
+              <dd class="col-span-2 font-medium text-cream">{{ user.email }}</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 p-5">
+              <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">Rol</dt>
+              <dd class="col-span-2 font-mono uppercase text-cream">{{ user.role }}</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 p-5">
+              <dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">
+                Miembro desde
+              </dt>
+              <dd class="col-span-2 font-medium text-cream">
+                {{ user.createdAt | date: 'medium' }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="mt-6 grid gap-3 sm:grid-cols-3">
+          <a routerLink="/library" class="btn btn-secondary btn-block">Mi biblioteca</a>
+          <a routerLink="/orders" class="btn btn-secondary btn-block">Mis pedidos</a>
+          @if (isAdmin()) {
+            <a routerLink="/admin" class="btn btn-secondary btn-block">Panel admin</a>
+          }
+        </div>
+
+        <button type="button" class="btn btn-danger btn-block mt-6" (click)="logout()">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  }
+</section>

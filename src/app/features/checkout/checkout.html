@@ -1,0 +1,305 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Checkout</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Finalizar compra</h1>
+    <p class="mt-1.5 text-sm text-mist">Pago simulado, entrega instantánea de tus licencias.</p>
+  </div>
+
+  @if (granted(); as entitlements) {
+    <div class="mx-auto mt-8 max-w-2xl">
+      <div class="animate-rise surface overflow-hidden text-center" role="status">
+        <div class="bg-grid relative px-6 py-10">
+          <span
+            class="mx-auto grid h-16 w-16 place-items-center rounded-full border-2 border-acid-400/50 bg-acid-400/10 text-acid-300"
+            aria-hidden="true"
+          >
+            <svg
+              class="h-8 w-8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </span>
+          <h2 class="mt-5 font-display text-2xl font-extrabold text-cream">¡Pago aprobado!</h2>
+          <p class="mt-2 text-sm text-mist">
+            Tu compra se completó y las licencias ya están disponibles en tu biblioteca.
+          </p>
+        </div>
+
+        <div class="border-t border-ink-800 p-6">
+          <h3 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+            {{ entitlements.length }} {{ entitlements.length === 1 ? 'licencia' : 'licencias' }}
+          </h3>
+          <ul class="mt-4 space-y-2.5 text-left">
+            @for (grant of entitlements; track grant.id) {
+              <li
+                class="flex items-center gap-2 rounded-lg border border-ink-800 bg-ink-950 px-3.5 py-2.5"
+              >
+                <code class="flex-1 truncate font-mono text-sm text-acid-300">{{
+                  grant.licenseKey
+                }}</code>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm"
+                  (click)="copyKey(grant.licenseKey)"
+                  aria-label="Copiar licencia {{ grant.licenseKey }}"
+                >
+                  Copiar
+                </button>
+              </li>
+            }
+          </ul>
+
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a routerLink="/library" class="btn btn-primary btn-lg flex-1">Ir a mi biblioteca</a>
+            <a routerLink="/orders" class="btn btn-secondary btn-lg flex-1">Ver pedidos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else if (isEmpty()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="empty"
+        title="No hay nada que pagar"
+        message="Tu carrito está vacío. Añade productos del catálogo para continuar."
+        actionLabel="Explorar catálogo"
+        (action)="goToCatalog()"
+      />
+    </div>
+  } @else {
+    <div class="mt-8 grid items-start gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <div class="surface p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+              Datos de la tarjeta
+            </h2>
+            <span class="badge border-ink-700 bg-ink-950 text-mist">Pago simulado</span>
+          </div>
+
+          <form class="mt-5 space-y-4" (ngSubmit)="onSubmit()" novalidate>
+            <label class="field">
+              <span class="field-label">Nombre en la tarjeta</span>
+              <input
+                type="text"
+                name="cardName"
+                class="input"
+                [class.input-invalid]="submitted && !card.cardName.trim()"
+                [(ngModel)]="card.cardName"
+                (ngModelChange)="resetError()"
+                placeholder="Ada Lovelace"
+                autocomplete="cc-name"
+                [attr.aria-invalid]="submitted && !card.cardName.trim()"
+                [attr.aria-describedby]="
+                  submitted && !card.cardName.trim() ? 'card-name-error' : null
+                "
+              />
+              @if (submitted && !card.cardName.trim()) {
+                <span id="card-name-error" class="field-error"
+                  >Introduce el nombre de la tarjeta.</span
+                >
+              }
+            </label>
+
+            <label class="field">
+              <span class="field-label">Número de tarjeta</span>
+              <input
+                type="text"
+                name="cardNumber"
+                class="input"
+                [class.input-invalid]="submitted && !card.cardNumber.trim()"
+                [(ngModel)]="card.cardNumber"
+                (ngModelChange)="resetError()"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                placeholder="4242 4242 4242 4242"
+                [attr.aria-invalid]="submitted && !card.cardNumber.trim()"
+                [attr.aria-describedby]="
+                  submitted && !card.cardNumber.trim() ? 'card-number-error' : null
+                "
+              />
+              @if (submitted && !card.cardNumber.trim()) {
+                <span id="card-number-error" class="field-error"
+                  >Introduce el número de tarjeta.</span
+                >
+              }
+            </label>
+
+            <div class="grid grid-cols-2 gap-3">
+              <label class="field">
+                <span class="field-label">Caducidad</span>
+                <input
+                  type="text"
+                  name="expiry"
+                  class="input"
+                  [class.input-invalid]="submitted && !card.expiry.trim()"
+                  [(ngModel)]="card.expiry"
+                  (ngModelChange)="resetError()"
+                  placeholder="12/30"
+                  autocomplete="cc-exp"
+                  [attr.aria-invalid]="submitted && !card.expiry.trim()"
+                  [attr.aria-describedby]="submitted && !card.expiry.trim() ? 'expiry-error' : null"
+                />
+                @if (submitted && !card.expiry.trim()) {
+                  <span id="expiry-error" class="field-error">Introduce la caducidad.</span>
+                }
+              </label>
+              <label class="field">
+                <span class="field-label">CVC</span>
+                <input
+                  type="text"
+                  name="cvc"
+                  class="input"
+                  [class.input-invalid]="submitted && !card.cvc.trim()"
+                  [(ngModel)]="card.cvc"
+                  (ngModelChange)="resetError()"
+                  inputmode="numeric"
+                  autocomplete="cc-csc"
+                  placeholder="123"
+                  [attr.aria-invalid]="submitted && !card.cvc.trim()"
+                  [attr.aria-describedby]="submitted && !card.cvc.trim() ? 'cvc-error' : null"
+                />
+                @if (submitted && !card.cvc.trim()) {
+                  <span id="cvc-error" class="field-error">Introduce el CVC.</span>
+                }
+              </label>
+            </div>
+
+            <div aria-live="polite" class="space-y-2.5">
+              @if (declined()) {
+                <div
+                  class="flex items-start gap-3 rounded-lg border border-amber-800/60 bg-amber-950/40 px-3.5 py-3 text-sm text-amber-300"
+                  role="alert"
+                >
+                  <svg
+                    class="mt-0.5 h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.9"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
+                    />
+                  </svg>
+                  <p class="leading-relaxed">
+                    Pago rechazado. Prueba con la tarjeta demo — tu carrito se conserva.
+                  </p>
+                </div>
+              }
+              @if (error) {
+                <div
+                  class="flex items-start gap-3 rounded-lg border border-red-800/60 bg-red-950/40 px-3.5 py-3 text-sm text-red-300"
+                  role="alert"
+                >
+                  <svg
+                    class="mt-0.5 h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.9"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
+                    />
+                  </svg>
+                  <p class="leading-relaxed">{{ error }}</p>
+                </div>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+              @if (loading) {
+                <svg
+                  class="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3a9 9 0 1 0 9 9" />
+                </svg>
+                Procesando pago…
+              } @else {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 7h18v13H3zM3 7l2-3h5l1.5 3M8 12h8" />
+                </svg>
+                Pagar {{ subtotalCents() | money }}
+              }
+            </button>
+          </form>
+
+          <p class="mt-4 text-xs leading-relaxed text-ink-500">
+            Demo: usa <code class="font-mono text-acid-300">4242 4242 4242 4242</code> para aprobar
+            o cualquier número válido terminado en <code class="font-mono text-acid-300">0000</code>
+            para simular un rechazo. Nunca almacenamos datos de tarjetas.
+          </p>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-5">
+        <div class="surface sticky top-28 p-6">
+          <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">Resumen</h2>
+          <ul class="mt-5 space-y-3 text-sm">
+            @for (item of items(); track item.productId) {
+              <li class="flex items-baseline justify-between gap-3">
+                <span class="min-w-0 truncate text-mist">
+                  {{ item.title }} <span class="font-mono text-ink-500">× {{ item.quantity }}</span>
+                </span>
+                <span class="font-mono text-cream">{{
+                  item.priceCents * item.quantity | money
+                }}</span>
+              </li>
+            }
+          </ul>
+          <div class="mt-5 flex items-center justify-between border-t border-ink-800 pt-4">
+            <span class="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-500"
+              >Total</span
+            >
+            <span class="font-display text-2xl font-extrabold text-cream">
+              {{ subtotalCents() | money }}
+            </span>
+          </div>
+          <p class="mt-3 flex items-center gap-2 text-xs text-ink-500">
+            <svg
+              class="h-4 w-4 text-acid-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+            </svg>
+            Entrega y licencia inmediatas tras el pago
+          </p>
+        </div>
+      </aside>
+    </div>
+  }
+</section>

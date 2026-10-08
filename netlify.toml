@@ -1,0 +1,19 @@
+# Netlify — ByteMarket frontend (Angular SPA)
+# Site name: bytemarket  →  https://bytemarket.netlify.app
+#
+# This repository IS the frontend, so Netlify builds from the repo root.
+
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist/frontend/browser"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# SPA fallback: every unknown path (e.g. /library on a hard reload) is served
+# index.html with a 200 so the Angular router can resolve it. Existing static
+# files are always served first, so hashed assets are unaffected.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

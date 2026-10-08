@@ -1,0 +1,91 @@
+<section class="mx-auto max-w-4xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Historial</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Mis pedidos</h1>
+    <p class="mt-1.5 text-sm text-mist">Todas tus compras y su estado, en un solo lugar.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="mt-8 space-y-3" aria-busy="true" aria-label="Cargando pedidos">
+      @for (cell of [0, 1, 2]; track cell) {
+        <div class="skeleton h-24 rounded-2xl"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="error"
+        title="No pudimos cargar tus pedidos"
+        [message]="error() ?? ''"
+        actionLabel="Reintentar"
+        (action)="load()"
+      />
+    </div>
+  } @else if (orderList().length === 0) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="empty"
+        title="Todavía no tienes pedidos"
+        message="Cuando completes una compra, aparecerá aquí con su estado y detalle."
+        actionLabel="Explorar catálogo"
+        (action)="goToCatalog()"
+      />
+    </div>
+  } @else {
+    <ul class="mt-8 space-y-3">
+      @for (order of orderList(); track order.id) {
+        <li>
+          <a
+            [routerLink]="['/orders', order.id]"
+            class="group surface block p-5 transition hover:border-acid-400/50"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div class="flex min-w-0 items-center gap-4">
+                <span
+                  class="hidden h-11 w-11 shrink-0 place-items-center rounded-xl border border-ink-700 bg-ink-850 font-mono text-xs font-bold text-acid-300 sm:grid"
+                  aria-hidden="true"
+                >
+                  #{{ order.id.slice(0, 4) }}
+                </span>
+                <div class="min-w-0">
+                  <p class="truncate font-mono text-xs uppercase tracking-[0.14em] text-ink-500">
+                    {{ order.id }}
+                  </p>
+                  <p class="mt-1 flex flex-wrap items-center gap-2 text-sm text-mist">
+                    <span>{{ order.createdAt | date: 'medium' }}</span>
+                    <span class="text-ink-700" aria-hidden="true">·</span>
+                    <span class="text-ink-500">
+                      {{ order.items.reduce((n, i) => n + i.quantity, 0) }}
+                      {{ order.items.length === 1 ? 'artículo' : 'artículos' }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex shrink-0 items-center gap-4">
+                <span class="badge" [class]="statusClass(order.status)">
+                  {{ statusLabels[order.status] }}
+                </span>
+                <span class="font-display text-lg font-extrabold text-cream">
+                  {{ order.totalCents | money }}
+                </span>
+                <svg
+                  class="h-4 w-4 text-ink-500 transition group-hover:translate-x-0.5 group-hover:text-acid-300"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</section>

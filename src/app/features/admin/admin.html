@@ -1,0 +1,344 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Administración</p>
+      <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Panel de administración</h1>
+      <p class="mt-1.5 text-sm text-mist">Gestiona el catálogo y revisa todos los pedidos.</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      Nuevo producto
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <form class="animate-fade surface mt-6 p-5 sm:p-6" (ngSubmit)="save()" novalidate>
+      <div class="flex items-center justify-between">
+        <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+          {{ form.id ? 'Editar producto' : 'Nuevo producto' }}
+        </h2>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm text-ink-500"
+          (click)="cancelForm()"
+          aria-label="Cerrar formulario"
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="mt-5 grid gap-4 sm:grid-cols-2">
+        <label class="field">
+          <span class="field-label">Título</span>
+          <input
+            name="title"
+            class="input"
+            [(ngModel)]="form.title"
+            required
+            placeholder="Neo Tokyo Racer"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">Slug</span>
+          <input
+            name="slug"
+            class="input font-mono"
+            [(ngModel)]="form.slug"
+            required
+            placeholder="neo-tokyo-racer"
+          />
+        </label>
+        <label class="field sm:col-span-2">
+          <span class="field-label">Resumen</span>
+          <input
+            name="summary"
+            class="input"
+            [(ngModel)]="form.summary"
+            required
+            placeholder="Cyberpunk street racing…"
+          />
+        </label>
+        <label class="field sm:col-span-2">
+          <span class="field-label">Descripción</span>
+          <textarea
+            name="description"
+            class="input"
+            rows="3"
+            [(ngModel)]="form.description"
+            required
+          ></textarea>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Tipo</span>
+          <select name="type" class="input" [(ngModel)]="form.type">
+            @for (type of types; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Plataforma</span>
+          <select name="platform" class="input" [(ngModel)]="form.platform">
+            @for (platform of platforms; track platform) {
+              <option [value]="platform">{{ platform }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Categoría</span>
+          <select name="categoryId" class="input" [(ngModel)]="form.categoryId">
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Precio (USD)</span>
+          <input
+            name="price"
+            class="input"
+            [(ngModel)]="form.price"
+            inputmode="decimal"
+            placeholder="19.99"
+          />
+        </label>
+
+        <label class="field sm:col-span-2">
+          <span class="field-label">URL de portada (opcional)</span>
+          <input
+            name="coverImageUrl"
+            class="input font-mono"
+            [(ngModel)]="form.coverImageUrl"
+            placeholder="https://…"
+          />
+        </label>
+        <label class="field sm:col-span-2">
+          <span class="field-label">URL del archivo (descarga)</span>
+          <input
+            name="assetUrl"
+            class="input font-mono"
+            [(ngModel)]="form.assetUrl"
+            required
+            placeholder="https://…"
+          />
+        </label>
+
+        @if (!form.id) {
+          <label class="field">
+            <span class="field-label">Estado inicial</span>
+            <select name="status" class="input" [(ngModel)]="form.status">
+              <option value="DRAFT">Borrador</option>
+              <option value="PUBLISHED">Publicado</option>
+            </select>
+          </label>
+        }
+      </div>
+
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row">
+        <button type="button" class="btn btn-secondary flex-1 sm:flex-none" (click)="cancelForm()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary flex-1 sm:flex-none" [disabled]="saving()">
+          @if (saving()) {
+            <svg
+              class="h-4 w-4 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3a9 9 0 1 0 9 9" />
+            </svg>
+            Guardando…
+          } @else {
+            {{ form.id ? 'Guardar cambios' : 'Crear producto' }}
+          }
+        </button>
+      </div>
+    </form>
+  }
+
+  <div class="mt-10 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="eyebrow">Productos</p>
+      <h2 class="mt-1 font-display text-xl font-bold text-cream">Catálogo</h2>
+    </div>
+    <div class="flex flex-wrap items-end gap-3">
+      <label class="field">
+        <span class="field-label">Buscar</span>
+        <input
+          class="input w-48"
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+          (keyup.enter)="loadProducts()"
+          placeholder="Título…"
+        />
+      </label>
+      <label class="field">
+        <span class="field-label">Estado</span>
+        <select class="input w-36" [value]="statusFilter()" (change)="onStatusFilter($event)">
+          <option value="">Todos</option>
+          <option value="DRAFT">Borrador</option>
+          <option value="PUBLISHED">Publicado</option>
+          <option value="ARCHIVED">Archivado</option>
+        </select>
+      </label>
+      <button type="button" class="btn btn-secondary" (click)="loadProducts()">Aplicar</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="mt-4 space-y-3" aria-busy="true" aria-label="Cargando productos">
+      @for (cell of [0, 1, 2, 3]; track cell) {
+        <div class="skeleton h-16 rounded-xl"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div
+      class="mt-4 rounded-xl border border-red-800/60 bg-red-950/30 px-4 py-3 text-sm text-red-300"
+      role="alert"
+    >
+      {{ error() }}
+      <button type="button" class="link ml-2" (click)="loadProducts()">Reintentar</button>
+    </div>
+  } @else {
+    <div class="surface mt-4 overflow-x-auto">
+      <table class="w-full min-w-[44rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-ink-800 text-xs uppercase tracking-wider text-ink-500">
+            <th class="px-5 py-3.5 font-semibold">Producto</th>
+            <th class="px-5 py-3.5 font-semibold">Precio</th>
+            <th class="px-5 py-3.5 font-semibold">Estado</th>
+            <th class="px-5 py-3.5 text-right font-semibold">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-800">
+          @for (product of products(); track product.id) {
+            <tr class="transition hover:bg-ink-850/60">
+              <td class="px-5 py-4">
+                <p class="font-medium text-cream">{{ product.title }}</p>
+                <p class="mt-0.5 font-mono text-xs text-ink-500">/{{ product.slug }}</p>
+              </td>
+              <td class="px-5 py-4 font-mono text-cream">{{ product.priceCents | money }}</td>
+              <td class="px-5 py-4">
+                <span class="badge" [class]="statusClass(product.status)">
+                  {{ statusLabels[product.status] }}
+                </span>
+              </td>
+              <td class="px-5 py-4">
+                <div class="flex flex-wrap justify-end gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    (click)="openEdit(product)"
+                  >
+                    Editar
+                  </button>
+                  @if (product.status !== 'PUBLISHED') {
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm border-emerald-800/60 text-emerald-300 hover:border-emerald-600"
+                      (click)="setStatus(product, 'PUBLISHED')"
+                    >
+                      Publicar
+                    </button>
+                  }
+                  @if (product.status !== 'ARCHIVED') {
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      (click)="setStatus(product, 'ARCHIVED')"
+                    >
+                      Archivar
+                    </button>
+                  }
+                  @if (product.status === 'ARCHIVED') {
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm border-amber-800/60 text-amber-300 hover:border-amber-600"
+                      (click)="setStatus(product, 'DRAFT')"
+                    >
+                      A borrador
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-5 py-12 text-center text-mist">
+                Sin productos que coincidan con la búsqueda.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-right font-mono text-[11px] uppercase tracking-[0.14em] text-ink-500">
+      {{ total() }} producto{{ total() === 1 ? '' : 's' }}
+    </p>
+  }
+
+  <div class="mt-12">
+    <p class="eyebrow">Ventas</p>
+    <h2 class="mt-1 font-display text-xl font-bold text-cream">Todos los pedidos</h2>
+
+    <div class="surface mt-4 overflow-x-auto">
+      <table class="w-full min-w-[40rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-ink-800 text-xs uppercase tracking-wider text-ink-500">
+            <th class="px-5 py-3.5 font-semibold">Pedido</th>
+            <th class="px-5 py-3.5 font-semibold">Usuario</th>
+            <th class="px-5 py-3.5 font-semibold">Total</th>
+            <th class="px-5 py-3.5 font-semibold">Estado</th>
+            <th class="px-5 py-3.5 font-semibold">Fecha</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-800">
+          @for (order of orders(); track order.id) {
+            <tr class="transition hover:bg-ink-850/60">
+              <td class="px-5 py-4 font-mono text-xs text-mist">#{{ order.id.slice(0, 8) }}</td>
+              <td class="px-5 py-4 font-mono text-xs text-mist">#{{ order.userId.slice(0, 8) }}</td>
+              <td class="px-5 py-4 font-mono text-cream">{{ order.totalCents | money }}</td>
+              <td class="px-5 py-4">
+                <span class="badge" [class]="orderStatusClass(order.status)">
+                  {{ orderStatusLabels[order.status] }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-mist">{{ order.createdAt | date: 'short' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="px-5 py-12 text-center text-mist">Sin pedidos todavía.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

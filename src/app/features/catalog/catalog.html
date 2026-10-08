@@ -1,0 +1,195 @@
+<section class="relative overflow-hidden border-b border-ink-800">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute -left-32 -top-48 h-96 w-96 rounded-full bg-acid-400/10 blur-3xl"
+    aria-hidden="true"
+  ></div>
+  <div class="relative mx-auto max-w-6xl px-4 py-12 sm:py-16">
+    <p class="eyebrow">Marketplace digital</p>
+    <h1
+      class="text-balance mt-3 max-w-2xl font-display text-4xl font-extrabold leading-[1.05] text-cream sm:text-5xl"
+    >
+      Juegos, software y activos digitales, <span class="text-acid-400">al instante</span>.
+    </h1>
+    <p class="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
+      Pago simulado, entrega real: al confirmar la compra recibes tu licencia y tu descarga sin
+      esperas ni intermediarios.
+    </p>
+    <dl
+      class="mt-7 flex flex-wrap gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-500"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-acid-400" aria-hidden="true">◆</span>
+        <dt>Entrega instantánea</dt>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-acid-400" aria-hidden="true">◆</span>
+        <dt>Sin DRM</dt>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-acid-400" aria-hidden="true">◆</span>
+        <dt>Licencias vitalicias</dt>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <form class="surface p-4 sm:p-5" (submit)="$event.preventDefault()" role="search">
+    <div class="grid gap-3 lg:grid-cols-12">
+      <label class="field lg:col-span-5">
+        <span class="field-label">Buscar</span>
+        <span class="relative">
+          <svg
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.2-3.2" />
+          </svg>
+          <input
+            type="search"
+            class="input pl-9"
+            [value]="searchTerm()"
+            (input)="onSearchInput($event)"
+            (keydown)="onSearchKeydown($event)"
+            placeholder="Título o descripción…"
+            aria-label="Buscar productos"
+          />
+        </span>
+      </label>
+
+      <label class="field lg:col-span-3">
+        <span class="field-label">Plataforma</span>
+        <select class="input" [value]="platform()" (change)="setPlatform($event)">
+          <option value="">Todas</option>
+          @for (item of platforms; track item) {
+            <option [value]="item">{{ platformLabels[item] }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field lg:col-span-2">
+        <span class="field-label">Precio mín.</span>
+        <input
+          type="text"
+          inputmode="decimal"
+          class="input"
+          [value]="minPrice()"
+          (change)="setMinPrice($event)"
+          placeholder="0"
+        />
+      </label>
+
+      <label class="field lg:col-span-2">
+        <span class="field-label">Precio máx.</span>
+        <input
+          type="text"
+          inputmode="decimal"
+          class="input"
+          [value]="maxPrice()"
+          (change)="setMaxPrice($event)"
+          placeholder="50"
+        />
+      </label>
+    </div>
+
+    <div class="mt-4 flex flex-col gap-3 border-t border-ink-800 pt-4 sm:flex-row sm:items-center">
+      <div class="min-w-0 flex-1">
+        <app-category-filter
+          [categories]="categories()"
+          [selected]="categorySlug()"
+          (selectedChange)="setCategory($event)"
+        />
+      </div>
+      @if (hasActiveFilters()) {
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm shrink-0 self-start text-mist hover:text-coral-400 sm:self-auto"
+          (click)="resetFilters()"
+        >
+          Limpiar filtros
+        </button>
+      }
+    </div>
+  </form>
+
+  @if (loading()) {
+    <div
+      class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      aria-busy="true"
+      aria-label="Cargando catálogo"
+    >
+      @for (cell of [0, 1, 2, 3, 4, 5, 6, 7]; track cell) {
+        <div class="surface overflow-hidden">
+          <div class="skeleton aspect-[16/10] rounded-none"></div>
+          <div class="space-y-3 p-4">
+            <div class="skeleton h-4 w-3/4"></div>
+            <div class="skeleton h-3 w-full"></div>
+            <div class="skeleton h-3 w-2/3"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="error"
+        title="No pudimos cargar el catálogo"
+        [message]="error() ?? ''"
+        actionLabel="Reintentar"
+        (action)="load()"
+      />
+    </div>
+  } @else if (products().length === 0) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="empty"
+        title="Sin resultados"
+        message="No hay productos que coincidan con tu búsqueda. Prueba a ajustar los filtros."
+        [actionLabel]="hasActiveFilters() ? 'Limpiar filtros' : 'Recargar'"
+        (action)="hasActiveFilters() ? resetFilters() : load()"
+      />
+    </div>
+  } @else {
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm text-mist">
+        Mostrando
+        <span class="font-mono text-cream">{{ rangeStart() }}–{{ rangeEnd() }}</span>
+        de <span class="font-mono text-cream">{{ total() }}</span>
+        {{ total() === 1 ? 'producto' : 'productos' }}
+      </p>
+      <label class="flex items-center gap-2 text-xs text-mist">
+        <span class="font-mono uppercase tracking-[0.14em]">Ordenar</span>
+        <select
+          class="input w-auto py-2 pr-8 text-xs"
+          [value]="sortBy()"
+          (change)="setSort($event)"
+          aria-label="Ordenar resultados"
+        >
+          @for (item of sorts; track item) {
+            <option [value]="item">{{ sortLabels[item] }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @for (product of products(); track product.id; let i = $index) {
+        <app-product-card
+          class="animate-rise"
+          [style.animation-delay.ms]="i * 35"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+        />
+      }
+    </div>
+
+    <app-pagination [page]="page()" [pageCount]="pageCount()" (pageChange)="goToPage($event)" />
+  }
+</section>

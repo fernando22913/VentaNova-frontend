@@ -1,0 +1,224 @@
+<header class="sticky top-0 z-40">
+  <div class="overflow-hidden border-b border-ink-800 bg-acid-400 text-ink-950">
+    <div class="flex w-max animate-marquee">
+      <div
+        class="flex shrink-0 items-center gap-8 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.28em]"
+      >
+        <span>Entrega instantánea</span>
+        <span aria-hidden="true">◆</span>
+        <span>Sin DRM</span>
+        <span aria-hidden="true">◆</span>
+        <span>Licencias vitalicias</span>
+        <span aria-hidden="true">◆</span>
+        <span>Descarga inmediata</span>
+        <span aria-hidden="true">◆</span>
+        <span>Soporte 24/7</span>
+        <span aria-hidden="true">◆</span>
+      </div>
+      <div
+        aria-hidden="true"
+        class="flex shrink-0 items-center gap-8 px-4 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.28em]"
+      >
+        <span>Entrega instantánea</span>
+        <span>◆</span>
+        <span>Sin DRM</span>
+        <span>◆</span>
+        <span>Licencias vitalicias</span>
+        <span>◆</span>
+        <span>Descarga inmediata</span>
+        <span>◆</span>
+        <span>Soporte 24/7</span>
+        <span>◆</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-b border-ink-800 bg-ink-950/85 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+      <a
+        routerLink="/"
+        class="group flex items-center gap-2.5"
+        (click)="closeMenu()"
+        aria-label="ByteMarket, ir al catálogo"
+      >
+        <span
+          class="grid h-9 w-9 place-items-center rounded-lg bg-acid-400 font-display text-lg font-extrabold leading-none text-ink-950 transition group-hover:bg-acid-300"
+          aria-hidden="true"
+          >B</span
+        >
+        <span class="font-display text-lg font-bold tracking-tight text-cream">
+          Byte<span class="text-acid-400">Market</span>
+        </span>
+      </a>
+
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
+        <a
+          routerLink="/"
+          routerLinkActive="nav-link-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+        >
+          Catálogo
+        </a>
+        @if (isLoggedIn()) {
+          <a routerLink="/library" routerLinkActive="nav-link-active" class="nav-link"
+            >Biblioteca</a
+          >
+          <a routerLink="/orders" routerLinkActive="nav-link-active" class="nav-link">Pedidos</a>
+        }
+        @if (isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="nav-link-active" class="nav-link">Admin</a>
+        }
+      </nav>
+
+      <div class="flex items-center gap-1.5">
+        <a
+          routerLink="/cart"
+          routerLinkActive="nav-link-active"
+          class="nav-link gap-2"
+          [attr.aria-label]="'Carrito de la compra, ' + cartCount() + ' artículos'"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L21 8H6" />
+            <circle cx="9" cy="20" r="1.4" />
+            <circle cx="18" cy="20" r="1.4" />
+          </svg>
+          <span class="hidden sm:inline">Carrito</span>
+          @if (cartCount() > 0) {
+            <span
+              class="grid h-5 min-w-5 place-items-center rounded-full bg-acid-400 px-1 font-mono text-[10px] font-bold text-ink-950"
+              aria-hidden="true"
+            >
+              {{ cartCount() }}
+            </span>
+          }
+        </a>
+
+        @if (isLoggedIn()) {
+          <div class="hidden items-center gap-1.5 lg:flex">
+            <a routerLink="/account" routerLinkActive="nav-link-active" class="nav-link">
+              <span
+                class="grid h-6 w-6 place-items-center rounded-md bg-ink-700 font-mono text-[10px] font-bold text-acid-300"
+                aria-hidden="true"
+                >{{ initials() }}</span
+              >
+              Cuenta
+            </a>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Salir</button>
+          </div>
+        } @else {
+          <div class="hidden items-center gap-1.5 lg:flex">
+            <a routerLink="/login" routerLinkActive="nav-link-active" class="nav-link">Entrar</a>
+            <a routerLink="/register" class="btn btn-primary btn-sm">Crear cuenta</a>
+          </div>
+        }
+
+        <button
+          type="button"
+          class="nav-link px-2 lg:hidden"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="mobile-menu"
+          [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'"
+        >
+          @if (menuOpen()) {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          } @else {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (menuOpen()) {
+    <div id="mobile-menu" class="animate-fade border-b border-ink-800 bg-ink-950 lg:hidden">
+      <nav class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4" aria-label="Menú móvil">
+        <a
+          routerLink="/"
+          routerLinkActive="nav-link-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+          (click)="closeMenu()"
+          >Catálogo</a
+        >
+        @if (isLoggedIn()) {
+          <a
+            routerLink="/library"
+            routerLinkActive="nav-link-active"
+            class="nav-link"
+            (click)="closeMenu()"
+            >Biblioteca</a
+          >
+          <a
+            routerLink="/orders"
+            routerLinkActive="nav-link-active"
+            class="nav-link"
+            (click)="closeMenu()"
+            >Pedidos</a
+          >
+          <a
+            routerLink="/account"
+            routerLinkActive="nav-link-active"
+            class="nav-link"
+            (click)="closeMenu()"
+            >Mi cuenta</a
+          >
+        }
+        @if (isAdmin()) {
+          <a
+            routerLink="/admin"
+            routerLinkActive="nav-link-active"
+            class="nav-link"
+            (click)="closeMenu()"
+            >Admin</a
+          >
+        }
+
+        <div class="my-2 border-t border-ink-800"></div>
+
+        @if (isLoggedIn()) {
+          <button type="button" class="btn btn-danger btn-block justify-start" (click)="logout()">
+            Cerrar sesión
+          </button>
+        } @else {
+          <a routerLink="/login" class="btn btn-secondary btn-block" (click)="closeMenu()"
+            >Entrar</a
+          >
+          <a routerLink="/register" class="btn btn-primary btn-block" (click)="closeMenu()"
+            >Crear cuenta</a
+          >
+        }
+      </nav>
+    </div>
+  }
+</header>

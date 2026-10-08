@@ -1,0 +1,44 @@
+@if (pageCount() > 1) {
+  <nav aria-label="Paginación" class="flex flex-wrap items-center justify-center gap-1.5 py-10">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm px-3"
+      [disabled]="page() <= 1"
+      (click)="goTo(page() - 1)"
+      aria-label="Página anterior"
+    >
+      ← Anterior
+    </button>
+
+    @for (item of pages(); track $index) {
+      @if (item === 'gap') {
+        <span class="px-1 font-mono text-sm text-ink-500" aria-hidden="true">…</span>
+      } @else {
+        <button
+          type="button"
+          class="grid h-9 min-w-9 place-items-center rounded-md border px-2 font-mono text-sm transition"
+          [class]="
+            item === page()
+              ? 'border-acid-400 bg-acid-400 font-bold text-ink-950'
+              : 'border-ink-700 text-mist hover:border-ink-600 hover:text-cream'
+          "
+          [attr.aria-current]="item === page() ? 'page' : null"
+          [attr.aria-label]="'Página ' + item"
+          (click)="goTo(item)"
+        >
+          {{ item }}
+        </button>
+      }
+    }
+
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm px-3"
+      [disabled]="page() >= pageCount()"
+      (click)="goTo(page() + 1)"
+      aria-label="Página siguiente"
+    >
+      Siguiente →
+    </button>
+  </nav>
+}

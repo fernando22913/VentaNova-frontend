@@ -1,0 +1,69 @@
+<footer class="mt-20 border-t border-ink-800 bg-ink-950">
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <a routerLink="/" class="flex items-center gap-2.5">
+          <span
+            class="grid h-8 w-8 place-items-center rounded-md bg-acid-400 font-display text-base font-extrabold text-ink-950"
+            aria-hidden="true"
+            >B</span
+          >
+          <span class="font-display text-lg font-bold tracking-tight">
+            Byte<span class="text-acid-400">Market</span>
+          </span>
+        </a>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-mist">
+          El mercado de bienes digitales con entrega instantánea. Compras una vez, lo tienes para
+          siempre.
+        </p>
+        <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+          Desarrollado por ByteMarket Labs
+        </p>
+      </div>
+
+      <nav aria-label="Tienda">
+        <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">Tienda</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a routerLink="/" class="text-mist transition hover:text-acid-300">Catálogo</a></li>
+          <li>
+            <a routerLink="/cart" class="text-mist transition hover:text-acid-300">Carrito</a>
+          </li>
+          <li>
+            <a routerLink="/library" class="text-mist transition hover:text-acid-300">Biblioteca</a>
+          </li>
+          <li>
+            <a routerLink="/orders" class="text-mist transition hover:text-acid-300">Mis pedidos</a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Cuenta">
+        <h2 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">Cuenta</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a routerLink="/login" class="text-mist transition hover:text-acid-300"
+              >Iniciar sesión</a
+            >
+          </li>
+          <li>
+            <a routerLink="/register" class="text-mist transition hover:text-acid-300"
+              >Crear cuenta</a
+            >
+          </li>
+          <li>
+            <a routerLink="/account" class="text-mist transition hover:text-acid-300">Mi cuenta</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-4 border-t border-ink-800 pt-6 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p class="font-mono">© {{ year }} ByteMarket · Todos los derechos reservados</p>
+      <p class="font-mono uppercase tracking-[0.18em]">
+        Demo · Pagos simulados · Sin transacciones reales
+      </p>
+    </div>
+  </div>
+</footer>

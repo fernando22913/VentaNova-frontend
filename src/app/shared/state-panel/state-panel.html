@@ -1,0 +1,68 @@
+<div
+  class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-ink-700 bg-ink-900/60 px-6 py-14 text-center"
+  [class]="variant() === 'error' ? 'border-red-900/60' : ''"
+  role="status"
+>
+  <span
+    class="grid h-12 w-12 place-items-center rounded-full border"
+    [class]="
+      variant() === 'error'
+        ? 'border-red-900/60 bg-red-950/40 text-red-300'
+        : 'border-ink-700 bg-ink-850 text-acid-300'
+    "
+    aria-hidden="true"
+  >
+    @if (variant() === 'loading') {
+      <svg
+        class="h-5 w-5 animate-spin"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M12 3a9 9 0 1 0 9 9" />
+      </svg>
+    } @else if (variant() === 'error') {
+      <svg
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 9v4M12 17h.01" />
+        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+      </svg>
+    } @else {
+      <svg
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 7h18v13H3zM3 7l2-3h5l1.5 3M8 12h8" />
+      </svg>
+    }
+  </span>
+
+  <div class="max-w-md space-y-1.5">
+    @if (title()) {
+      <h2 class="font-display text-lg font-bold text-cream">{{ title() }}</h2>
+    }
+    @if (message()) {
+      <p class="text-sm leading-relaxed text-mist">{{ message() }}</p>
+    }
+  </div>
+
+  @if (actionLabel()) {
+    <button type="button" class="btn btn-secondary btn-sm" (click)="action.emit()">
+      {{ actionLabel() }}
+    </button>
+  }
+</div>

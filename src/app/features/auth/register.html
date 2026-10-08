@@ -1,0 +1,231 @@
+<section class="relative overflow-hidden px-4 py-12">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-acid-400/10 blur-3xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center py-6">
+    <div class="animate-rise surface overflow-hidden">
+      <div class="flex items-center gap-3 border-b border-ink-800 bg-ink-900 px-6 py-5">
+        <span
+          class="grid h-9 w-9 place-items-center rounded-lg bg-acid-400 font-display text-lg font-extrabold text-ink-950"
+          aria-hidden="true"
+          >B</span
+        >
+        <div>
+          <p class="font-display text-sm font-bold text-cream">
+            Byte<span class="text-acid-400">Market</span>
+          </p>
+          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-500">
+            Crea tu cuenta
+          </p>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8">
+        <p class="eyebrow">Empieza hoy</p>
+        <h1 class="mt-2 font-display text-2xl font-extrabold text-cream">Crear cuenta</h1>
+        <p class="mt-1 text-sm text-mist">
+          Únete para comprar y gestionar tus productos digitales.
+        </p>
+
+        <form class="mt-6 space-y-4" (ngSubmit)="onSubmit()" novalidate>
+          <label class="field">
+            <span class="field-label">Nombre</span>
+            <span class="relative">
+              <svg
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" />
+              </svg>
+              <input
+                type="text"
+                name="name"
+                class="input pl-9"
+                [class.input-invalid]="submitted && !name"
+                [(ngModel)]="name"
+                required
+                autocomplete="name"
+                placeholder="Tu nombre"
+                [attr.aria-invalid]="submitted && !name"
+                [attr.aria-describedby]="submitted && !name ? 'name-error' : null"
+              />
+            </span>
+            @if (submitted && !name) {
+              <span id="name-error" class="field-error">Introduce tu nombre.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Correo electrónico</span>
+            <span class="relative">
+              <svg
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+              <input
+                type="email"
+                name="email"
+                class="input pl-9"
+                [class.input-invalid]="submitted && !email"
+                [(ngModel)]="email"
+                required
+                autocomplete="email"
+                placeholder="tu@correo.com"
+                [attr.aria-invalid]="submitted && !email"
+                [attr.aria-describedby]="submitted && !email ? 'register-email-error' : null"
+              />
+            </span>
+            @if (submitted && !email) {
+              <span id="register-email-error" class="field-error">Introduce tu correo.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Contraseña</span>
+            <span class="relative">
+              <svg
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+              <input
+                type="password"
+                name="password"
+                class="input pl-9"
+                [class.input-invalid]="submitted && password.length > 0 && password.length < 8"
+                [(ngModel)]="password"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+                [attr.aria-invalid]="submitted && password.length > 0 && password.length < 8"
+                [attr.aria-describedby]="
+                  submitted && password.length > 0 && password.length < 8
+                    ? 'register-password-error'
+                    : null
+                "
+              />
+            </span>
+            @if (submitted && password && password.length < 8) {
+              <span id="register-password-error" class="field-error"
+                >La contraseña debe tener al menos 8 caracteres.</span
+              >
+            }
+          </label>
+
+          <label class="field">
+            <span class="field-label">Confirmar contraseña</span>
+            <span class="relative">
+              <svg
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+              <input
+                type="password"
+                name="confirmPassword"
+                class="input pl-9"
+                [class.input-invalid]="submitted && password !== confirmPassword"
+                [(ngModel)]="confirmPassword"
+                required
+                autocomplete="new-password"
+                placeholder="Repite la contraseña"
+                [attr.aria-invalid]="submitted && password !== confirmPassword"
+                [attr.aria-describedby]="
+                  submitted && password !== confirmPassword ? 'confirm-error' : null
+                "
+              />
+            </span>
+            @if (submitted && password !== confirmPassword) {
+              <span id="confirm-error" class="field-error">Las contraseñas no coinciden.</span>
+            }
+          </label>
+
+          <div aria-live="polite">
+            @if (error) {
+              <div
+                class="flex items-start gap-3 rounded-lg border border-red-800/60 bg-red-950/40 px-3.5 py-3 text-sm text-red-300"
+                role="alert"
+              >
+                <svg
+                  class="mt-0.5 h-4 w-4 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 9v4M12 17h.01" />
+                  <path
+                    d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
+                  />
+                </svg>
+                <p class="leading-relaxed">{{ error }}</p>
+              </div>
+            }
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+            @if (loading) {
+              <svg
+                class="h-4 w-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3a9 9 0 1 0 9 9" />
+              </svg>
+              Creando cuenta…
+            } @else {
+              Registrarme
+            }
+          </button>
+        </form>
+      </div>
+
+      <div class="border-t border-ink-800 bg-ink-900 px-6 py-4 text-center text-sm text-mist">
+        ¿Ya tienes cuenta?
+        <a routerLink="/login" class="link">Inicia sesión</a>
+      </div>
+    </div>
+  </div>
+</section>

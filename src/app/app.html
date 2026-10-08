@@ -1,0 +1,18 @@
+<div class="flex min-h-screen flex-col bg-ink-950 text-cream antialiased">
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-acid-400 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink-950"
+  >
+    Saltar al contenido
+  </a>
+
+  <app-navbar />
+
+  <main id="main" class="flex-1 scroll-mt-28">
+    <router-outlet />
+  </main>
+
+  <app-footer />
+
+  <app-toast-host />
+</div>

@@ -1,0 +1,140 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Biblioteca</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Mi biblioteca</h1>
+    <p class="mt-1.5 text-sm text-mist">
+      Tus licencias y descargas están siempre disponibles aquí, para siempre.
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div
+      class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      aria-busy="true"
+      aria-label="Cargando biblioteca"
+    >
+      @for (cell of [0, 1, 2, 3, 4, 5]; track cell) {
+        <div class="surface overflow-hidden">
+          <div class="skeleton aspect-[16/10] rounded-none"></div>
+          <div class="space-y-3 p-4">
+            <div class="skeleton h-4 w-2/3"></div>
+            <div class="skeleton h-9 w-full"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="error"
+        title="No pudimos cargar tu biblioteca"
+        [message]="error() ?? ''"
+        actionLabel="Reintentar"
+        (action)="load()"
+      />
+    </div>
+  } @else if (items().length === 0) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="empty"
+        title="Tu biblioteca está vacía"
+        message="Cuando compres un producto, su licencia y descarga aparecerán aquí al instante."
+        actionLabel="Explorar catálogo"
+        (action)="goToCatalog()"
+      />
+    </div>
+  } @else {
+    <p class="mt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-500">
+      {{ items().length }} {{ items().length === 1 ? 'producto' : 'productos' }} adquiridos
+    </p>
+
+    <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      @for (item of items(); track item.entitlementId) {
+        <article
+          class="group surface flex flex-col overflow-hidden transition hover:border-acid-400/50"
+        >
+          <div class="relative aspect-[16/10] overflow-hidden bg-ink-850">
+            @if (item.product.coverImageUrl) {
+              <img
+                [src]="item.product.coverImageUrl"
+                [alt]="item.product.title"
+                loading="lazy"
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+              />
+            } @else {
+              <div class="bg-dots grid h-full w-full place-items-center text-ink-600">
+                <span class="font-mono text-[11px] uppercase tracking-[0.2em]">Sin portada</span>
+              </div>
+            }
+            <span
+              class="badge absolute left-3 top-3 border-acid-400/40 bg-ink-950/80 text-acid-300 backdrop-blur"
+            >
+              {{ typeLabels[item.product.type] }}
+            </span>
+          </div>
+
+          <div class="flex flex-1 flex-col gap-4 p-4">
+            <div>
+              <h2 class="line-clamp-1 font-display text-base font-bold text-cream">
+                {{ item.product.title }}
+              </h2>
+              <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-500">
+                {{ platformLabels[item.product.platform] }} · adquirido
+                {{ item.grantedAt | date: 'shortDate' }}
+              </p>
+            </div>
+
+            <div class="mt-auto space-y-2.5">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-500">Licencia</p>
+              <div class="flex items-center gap-2">
+                <code
+                  class="flex-1 truncate rounded-lg border border-ink-800 bg-ink-950 px-3 py-2 font-mono text-xs"
+                  [class]="isRevealed(item.entitlementId) ? 'text-acid-300' : 'text-ink-500'"
+                >
+                  {{ isRevealed(item.entitlementId) ? item.licenseKey : '••••••••••••••••••••' }}
+                </code>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm shrink-0"
+                  (click)="toggleKey(item.entitlementId)"
+                  [attr.aria-expanded]="isRevealed(item.entitlementId)"
+                >
+                  {{ isRevealed(item.entitlementId) ? 'Ocultar' : 'Ver' }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm shrink-0"
+                  (click)="copyKey(item.licenseKey)"
+                  aria-label="Copiar licencia de {{ item.product.title }}"
+                >
+                  Copiar
+                </button>
+              </div>
+
+              <a
+                [href]="item.product.assetUrl"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary btn-block"
+              >
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3v12M7 10l5 5 5-5M4 21h16" />
+                </svg>
+                Descargar
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
