@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import type { CardDetails, LibraryItem, PayResult, PublicOrder } from '../models/order.model';
 
-/** Orders, checkout and library data access (all authenticated endpoints). */
+// Acceso a datos de pedidos, pago y biblioteca (todos endpoints autenticados).
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
   private readonly http = inject(HttpClient);

@@ -35,7 +35,7 @@ describe('CatalogService', () => {
       })
       .subscribe();
 
-    // Predicate so the query string does not disqualify the match.
+    // Predicado para que la cadena de consulta no invalide la coincidencia.
     const request = http.expectOne((req) => req.url === productsUrl);
     expect(request.request.method).toBe('GET');
     expect(request.request.params.get('search')).toBe('neo racer');

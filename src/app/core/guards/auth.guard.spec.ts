@@ -10,7 +10,7 @@ import { adminGuard, authGuard, guestGuard, workerGuard } from './auth.guard';
 
 type Role = 'CUSTOMER' | 'WORKER' | 'ADMIN';
 
-/** Configurable stub: the role it returns on login decides the session role. */
+// Stub configurable: el rol devuelto en login decide el rol de la sesión.
 let loginRole: Role = 'CUSTOMER';
 
 class StubAuthService {
@@ -60,7 +60,7 @@ async function signInAs(role: Role): Promise<AuthStore> {
   return store;
 }
 
-/** Builds a fresh (logged-out) store via the real TestBed wiring. */
+// Crea un store nuevo (sin sesión) con el cableado real de TestBed.
 function setupStore(): void {
   TestBed.configureTestingModule({
     providers: [AuthStore, { provide: AuthService, useClass: StubAuthService }, provideRouter([])],
@@ -72,8 +72,7 @@ describe('route guards', () => {
   const route = {} as ActivatedRouteSnapshot;
 
   beforeEach(() => {
-    // The jsdom localStorage is shared across tests; wipe sessions so guards
-    // start logged-out unless a test explicitly signs in.
+    // localStorage de jsdom se comparte; limpia sesiones para que los guards inicien sin sesión.
     localStorage.clear();
   });
 
@@ -87,7 +86,7 @@ describe('route guards', () => {
     setupStore();
     const result = TestBed.runInInjectionContext(() => authGuard(route, routeState('/account')));
     expect(result).not.toBe(true);
-    // It must be a UrlTree, not a boolean.
+    // Debe ser un UrlTree, no un booleano.
     expect(typeof result).not.toBe('boolean');
   });
 
@@ -107,7 +106,7 @@ describe('route guards', () => {
     const store = await signInAs('ADMIN');
     expect(TestBed.runInInjectionContext(() => adminGuard(route, routeState('/admin')))).toBe(true);
 
-    // Change role on the same store (no TestBed reconfiguration needed).
+    // Cambia el rol en el mismo store (sin reconfigurar TestBed).
     store.logout();
     loginRole = 'CUSTOMER';
     await firstValueFrom(store.login({ email: 'user@example.com', password: 'secret123' }));

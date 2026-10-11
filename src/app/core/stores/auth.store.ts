@@ -13,17 +13,7 @@ interface StoredSession {
   refreshToken: string;
 }
 
-/**
- * Signals-first session store (blueprint ADR-11). Holds the authenticated user
- * plus both tokens, persists to localStorage, and is the single source of truth
- * for guards and the auth/refresh interceptors.
- *
- * Security trade-off: tokens live in localStorage (kept from the previous
- * phase). That is XSS-exfiltratable; it is mitigated by Angular's default
- * output encoding (no innerHTML), a short 1-hour access-token lifetime and
- * rotating refresh tokens. The hardening path is an httpOnly cookie, which is
- * out of scope here.
- */
+// Store de sesión basado en signals (ADR-11): usuario + tokens en localStorage; fuente de verdad para guards/interceptors (los tokens son exfiltrables por XSS, mitigado con codificación, vida corta y rotación).
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
   private readonly auth = inject(AuthService);
@@ -32,7 +22,7 @@ export class AuthStore {
   private readonly accessTokenSignal = signal<string | null>(null);
   private readonly refreshTokenSignal = signal<string | null>(null);
 
-  /** Single-flight guard: concurrent 401s share one refresh request. */
+  // Guarda single-flight: los 401 concurrentes comparten una única petición de refresh.
   private refreshInFlight: Promise<boolean> | null = null;
 
   readonly currentUser = this.userSignal.asReadonly();
@@ -43,7 +33,7 @@ export class AuthStore {
   );
   readonly isAdmin = computed(() => this.userSignal()?.role === 'ADMIN');
   readonly isWorker = computed(() => this.userSignal()?.role === 'WORKER');
-  /** Staff = ADMIN or WORKER: can use the support/operations panel. */
+  // Staff = ADMIN o WORKER: puede usar el panel de soporte/operaciones.
   readonly isStaff = computed(() => {
     const role = this.userSignal()?.role;
     return role === 'ADMIN' || role === 'WORKER';
@@ -68,7 +58,7 @@ export class AuthStore {
     );
   }
 
-  /** Re-reads the current user from the API (exercises the Bearer interceptor). */
+  // Relee el usuario actual desde la API (ejercita el interceptor Bearer).
   refresh(): Observable<PublicUser> {
     return this.auth.me().pipe(
       tap(({ user }) => this.userSignal.set(user)),
@@ -76,11 +66,7 @@ export class AuthStore {
     );
   }
 
-  /**
-   * Rotates the session at most once for a burst of concurrent 401s. Resolves
-   * true when a new pair was stored, false when there is no session or the
-   * refresh failed (in which case the local session is cleared).
-   */
+  // Rota la sesión una vez ante una ráfaga de 401 concurrentes; true si se guardó un nuevo par, false si no hay sesión o falló el refresh (se limpia la sesión).
   refreshAccessToken(): Promise<boolean> {
     if (this.refreshInFlight) return this.refreshInFlight;
 
@@ -103,7 +89,7 @@ export class AuthStore {
     return this.refreshInFlight;
   }
 
-  /** Client-side logout; best-effort server-side revocation (never blocks). */
+  // Logout en el cliente; revocación en el servidor best-effort (nunca bloquea).
   logout(): void {
     const refreshToken = this.refreshTokenSignal();
     if (refreshToken) {
@@ -112,7 +98,7 @@ export class AuthStore {
     this.clearSession();
   }
 
-  /** Drops the local session without calling the API (e.g. failed refresh). */
+  // Descarta la sesión local sin llamar a la API (p. ej. refresh fallido).
   clearSession(): void {
     this.userSignal.set(null);
     this.accessTokenSignal.set(null);

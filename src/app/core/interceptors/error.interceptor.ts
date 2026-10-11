@@ -11,14 +11,7 @@ interface ApiErrorBody {
   };
 }
 
-/**
- * Surfaces API failures as toasts, extracting the message from the standard
- * `{ error: { message } }` envelope. Validation failures (422) also carry
- * field-level `details`, which are appended so the user knows *which* field is
- * wrong. 401s are left to the refresh interceptor (and are not toasted),
- * because an expired token is expected and recoverable. Always re-throws so
- * callers keep the real error.
- */
+// Muestra los fallos de la API como toasts (con detalles de campos, salvo 401) y relanza.
 export const errorInterceptor: HttpInterceptorFn = (request, next) => {
   const toasts = inject(ToastService);
 

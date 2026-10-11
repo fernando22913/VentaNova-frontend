@@ -32,7 +32,7 @@ export interface AdminProductQuery {
   pageSize?: number;
 }
 
-/** Payload for POST /admin/users — the admin provisions staff accounts. */
+// Payload de POST /admin/users para crear cuentas de staff.
 export interface CreateUserInput {
   email: string;
   name: string;

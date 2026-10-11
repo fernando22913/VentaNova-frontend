@@ -1,4 +1,4 @@
-/** Contact form payload mirrored from POST /api/v1/contact. */
+// Payload del formulario de contacto copiado de POST /api/v1/contact.
 export interface ContactMessageInput {
   name: string;
   email: string;
@@ -6,7 +6,7 @@ export interface ContactMessageInput {
   message: string;
 }
 
-/** Confirmation returned once the message is persisted (never "emailed"). */
+// Confirmación devuelta cuando el mensaje se persiste (nunca se "envía por email").
 export interface ContactMessageResult {
   id: string;
   name: string;
@@ -28,10 +28,7 @@ export function contactStatusClass(status: ContactStatus): string {
     : 'border-amber-800/60 bg-amber-950/50 text-amber-300';
 }
 
-/**
- * Staff inbox shape from GET /api/v1/contacts — the full message plus the
- * operator reply fields. Mirrors the backend `AdminContactMessage` DTO.
- */
+// Forma de la bandeja de staff de GET /api/v1/contacts; mensaje completo más campos de respuesta del operador.
 export interface StaffContactMessage {
   id: string;
   name: string;

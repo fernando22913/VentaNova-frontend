@@ -5,7 +5,7 @@
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Structural surfaces (green-tinted near-black) */
+  /* Superficies estructurales (casi negro con tinte verde) */
   --color-ink-950: #070a08;
   --color-ink-900: #0c110e;
   --color-ink-850: #111814;
@@ -14,18 +14,18 @@
   --color-ink-600: #38473b;
   --color-ink-500: #74897a;
 
-  /* Text */
+  /* Texto */
   --color-cream: #edf2e7;
   --color-mist: #93a596;
 
-  /* Brand signal */
+  /* Señal de marca */
   --color-acid-200: #eaffb8;
   --color-acid-300: #d8ff7e;
   --color-acid-400: #c1f94a;
   --color-acid-500: #a3dd2c;
   --color-acid-600: #7fb018;
 
-  /* Secondary signal */
+  /* Señal secundaria */
   --color-coral-400: #ff7a54;
   --color-coral-500: #f2542d;
 
@@ -96,7 +96,7 @@
 }
 
 @layer components {
-  /* Surfaces ------------------------------------------------------------- */
+  /* Superficies */
   .surface {
     @apply rounded-2xl border border-ink-800 bg-ink-900;
   }
@@ -104,7 +104,7 @@
     @apply rounded-2xl border border-ink-800 bg-ink-850;
   }
 
-  /* Buttons -------------------------------------------------------------- */
+  /* Botones */
   .btn {
     @apply inline-flex select-none items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold leading-none transition duration-150 disabled:cursor-not-allowed disabled:opacity-45;
   }
@@ -134,7 +134,7 @@
     @apply w-full;
   }
 
-  /* Forms ---------------------------------------------------------------- */
+  /* Formularios */
   .field {
     @apply flex flex-col gap-1.5;
   }
@@ -154,7 +154,7 @@
     @apply border-red-800/80 focus:border-red-500 focus:ring-red-500/10;
   }
 
-  /* Chips & badges ------------------------------------------------------- */
+  /* Chips y badges */
   .chip {
     @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-ink-700 bg-ink-900 px-3.5 py-1.5 text-xs font-medium text-mist transition duration-150 hover:border-ink-600 hover:text-cream;
   }
@@ -165,7 +165,7 @@
     @apply inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em];
   }
 
-  /* Navigation ----------------------------------------------------------- */
+  /* Navegación */
   .nav-link {
     @apply relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-mist transition duration-150 hover:bg-ink-850 hover:text-cream;
   }

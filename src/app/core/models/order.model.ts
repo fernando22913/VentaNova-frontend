@@ -43,7 +43,7 @@ export interface PublicOrder {
   items: PublicOrderItem[];
 }
 
-/** Admin order view — adds the owning user id. */
+// Vista de pedido de admin; añade el id del usuario propietario.
 export interface AdminOrder extends PublicOrder {
   userId: string;
 }
@@ -74,7 +74,7 @@ export interface CardDetails {
   cvc: string;
 }
 
-/** A line in the client-side cart — a product snapshot + quantity. */
+// Una línea del carrito del cliente: un snapshot del producto + cantidad.
 export interface CartItem {
   productId: string;
   slug: string;

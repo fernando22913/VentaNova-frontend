@@ -1,8 +1,4 @@
-/**
- * Shared catalog domain types, mirrored by hand from the API DTOs
- * (see backend/src/infrastructure/http/dto.ts). Acknowledged drift risk is
- * mitigated by the API contract tests in backend/tests/api.
- */
+// Tipos de dominio del catálogo compartidos, copiados a mano de los DTO de la API.
 
 export type ProductType = 'GAME' | 'SOFTWARE' | 'DLC' | 'ASSET';
 export type ProductPlatform = 'WINDOWS' | 'MAC' | 'LINUX' | 'WEB' | 'CROSS';
@@ -57,7 +53,7 @@ export interface Category {
   name: string;
 }
 
-/** Public product shape (catalog list — no description/assetUrl). */
+// Forma del producto público (lista del catálogo, sin description/assetUrl).
 export interface PublicProduct {
   id: string;
   slug: string;
@@ -72,7 +68,7 @@ export interface PublicProduct {
   updatedAt: string;
 }
 
-/** Detail extends the list shape with the full description + download URL. */
+// El detalle amplía la forma de la lista con la descripción completa y la URL de descarga.
 export interface PublicProductDetail extends PublicProduct {
   description: string;
   assetUrl: string;
@@ -85,10 +81,7 @@ export interface PagedResult<T> {
   total: number;
 }
 
-/**
- * Catalog search criteria as sent to `GET /products`.
- * Price fields are user-facing dollars submitted as integer cents.
- */
+// Criterios de búsqueda del catálogo para `GET /products`; los precios son dólares enviados en céntimos.
 export interface ProductQuery {
   search?: string;
   category?: string;

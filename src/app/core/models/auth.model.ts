@@ -1,6 +1,6 @@
 export type UserRole = 'CUSTOMER' | 'WORKER' | 'ADMIN';
 
-/** Public user shape as returned by the API (`/auth/register|login|me`). */
+// Forma del usuario público devuelta por la API (`/auth/register|login|me`).
 export interface PublicUser {
   id: string;
   email: string;
@@ -9,10 +9,7 @@ export interface PublicUser {
   createdAt: string;
 }
 
-/**
- * Token bundle returned by register/login/refresh. Snake_case mirrors the API
- * (OAuth-style token envelope). The refresh token is opaque — not a JWT.
- */
+// Paquete de tokens de register/login/refresh; snake_case refleja el envelope de la API.
 export interface AuthResult {
   user: PublicUser;
   access_token: string;

@@ -8,11 +8,7 @@ import {
   type PublicProduct,
 } from '../../core/models/catalog.model';
 
-/**
- * Tarjeta reutilizable de producto. Recibe el recurso desde su componente
- * padre con `@Input()` y comunica la acción de añadir al carrito con
- * `@Output()`.
- */
+// Tarjeta reutilizable de producto: recibe el recurso con @Input() y emite añadir al carrito con @Output().
 @Component({
   selector: 'app-product-card',
   templateUrl: './product-card.html',

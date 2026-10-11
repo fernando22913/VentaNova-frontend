@@ -28,7 +28,7 @@ import { PaginationComponent } from '../../shared/pagination/pagination';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 import { StatePanelComponent } from '../../shared/state-panel/state-panel';
 
-/** El backend limita pageSize a 60; el catálogo semilla cabe en una carga. */
+// El backend limita pageSize a 60; el catálogo semilla cabe en una carga.
 const FETCH_PAGE_SIZE = 60;
 
 @Component({
@@ -48,7 +48,7 @@ export class CatalogComponent {
 
   protected readonly pageSize = 12;
 
-  // Filter UI state (signals) — the source of truth for the derived results.
+  // Estado de los filtros de la UI (signals) — fuente de verdad de los resultados derivados.
   protected readonly searchTerm = signal('');
   protected readonly categorySlug = signal('');
   protected readonly platform = signal<ProductPlatform | ''>('');
@@ -57,16 +57,13 @@ export class CatalogComponent {
   protected readonly maxPrice = signal('');
   protected readonly page = signal(1);
 
-  // Full dataset loaded once from the service; filtering happens in the browser.
+  // Conjunto de datos completo cargado una vez desde el servicio; el filtrado ocurre en el navegador.
   protected readonly allProducts = signal<PublicProduct[]>([]);
   protected readonly categories = signal<Category[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
-  /**
-   * Visible products — `computed()` recalculates this set automatically every
-   * time a search term, category, platform, price or sort signal changes.
-   */
+  // Productos visibles; computed() recalcula este conjunto cuando cambia algún signal de filtro.
   protected readonly filteredProducts = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     const categorySlug = this.categorySlug();
@@ -139,7 +136,7 @@ export class CatalogComponent {
     this.load();
   }
 
-  /** Loads every published product once; the visible set is derived locally. */
+  // Carga una vez todos los productos publicados; el conjunto visible se deriva localmente.
   protected load(): void {
     this.loading.set(true);
     this.error.set(null);
@@ -208,7 +205,7 @@ export class CatalogComponent {
   }
 }
 
-/** Converts a user-facing dollar amount ("39.99") to integer cents. */
+// Convierte un importe en dólares para el usuario ("39.99") a centavos enteros.
 function toCents(value: string): number | undefined {
   const trimmed = value.trim().replace(',', '.');
   if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return undefined;

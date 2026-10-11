@@ -4,12 +4,9 @@ import { Router } from '@angular/router';
 
 import { AuthStore } from '../stores/auth.store';
 
-/**
- * Route guards are UX only — the backend re-verifies the JWT and role on every
- * protected call. These just decide whether the browser navigates at all.
- */
+// Los guards son solo UX; el backend reverifica el JWT y el rol en cada llamada.
 
-/** Requires a session; sends the logged-out visitor to the login screen. */
+// Requiere sesión; envía a los visitantes sin sesión a la pantalla de login.
 export const authGuard: CanActivateFn = (_route, state) => {
   const store = inject(AuthStore);
   const router = inject(Router);
@@ -18,7 +15,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
   return router.createUrlTree(['/login'], { queryParams: { next: state.url } });
 };
 
-/** Only reachable when logged OUT (login/register pages). */
+// Solo accesible sin sesión (páginas de login/registro).
 export const guestGuard: CanActivateFn = () => {
   const store = inject(AuthStore);
   const router = inject(Router);
@@ -27,7 +24,7 @@ export const guestGuard: CanActivateFn = () => {
   return true;
 };
 
-/** Requires the ADMIN role; guests are sent to login, customers to home. */
+// Requiere el rol ADMIN; los invitados van a login y los clientes a inicio.
 export const adminGuard: CanActivateFn = (_route, state) => {
   const store = inject(AuthStore);
   const router = inject(Router);
@@ -38,7 +35,7 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   return store.isAdmin() ? true : router.createUrlTree(['/']);
 };
 
-/** Requires a staff role (ADMIN or WORKER) for the support/operations panel. */
+// Requiere un rol de staff (ADMIN o WORKER) para el panel de operaciones.
 export const workerGuard: CanActivateFn = (_route, state) => {
   const store = inject(AuthStore);
   const router = inject(Router);

@@ -16,7 +16,7 @@ import type {
   CreateUserInput,
 } from '../models/admin.model';
 
-/** Admin catalog + orders data access (ADMIN role enforced server-side). */
+// Acceso a datos de catálogo y pedidos de admin (rol ADMIN verificado en el servidor).
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly http = inject(HttpClient);
@@ -52,14 +52,14 @@ export class AdminService {
       .pipe(map((response) => response.items));
   }
 
-  /** ADMIN-only: provision a staff/customer account. */
+  // Solo ADMIN: crea una cuenta de staff o cliente.
   createUser(input: CreateUserInput): Observable<PublicUser> {
     return this.http
       .post<{ user: PublicUser }>(`${this.baseUrl}/admin/users`, input)
       .pipe(map((response) => response.user));
   }
 
-  /** ADMIN-only: every account. */
+  // Solo ADMIN: todas las cuentas.
   listUsers(): Observable<PublicUser[]> {
     return this.http
       .get<{ items: PublicUser[] }>(`${this.baseUrl}/admin/users`)

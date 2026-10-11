@@ -16,7 +16,7 @@ export class ContactoComponent {
   private readonly contact = inject(ContactService);
   private readonly productosService = inject(ProductosService);
 
-  /** Categorías de interés disponibles para la solicitud. */
+  // Categorías de interés disponibles para la solicitud.
   protected readonly intereses = this.productosService.getCategorias();
 
   protected readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
@@ -24,7 +24,7 @@ export class ContactoComponent {
   protected readonly subjectInput = viewChild<ElementRef<HTMLInputElement>>('subjectInput');
   protected readonly messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 
-  /** Two-way bound with `[(ngModel)]` in the template (template-driven form). */
+  // Enlazado bidireccional con [(ngModel)] en la plantilla (formulario por plantilla).
   protected readonly form = {
     name: '',
     email: '',
@@ -33,9 +33,7 @@ export class ContactoComponent {
     message: '',
   };
 
-  // Signals for presentational state: the app runs zoneless, so writes from an
-  // async subscription must be signal-backed (plain properties never schedule
-  // a re-render after the request resolves).
+  // Signals para el estado de presentación: la app sin zonas necesita escrituras asíncronas respaldadas por signals.
   protected readonly submitted = signal(false);
   protected readonly submitting = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -45,7 +43,7 @@ export class ContactoComponent {
     () => this.submitted() && (!this.form.email || !EMAIL_PATTERN.test(this.form.email.trim())),
   );
 
-  /** Resumen en vivo derivado de los datos ingresados (requisito del formulario). */
+  // Resumen en vivo derivado de los datos ingresados (requisito del formulario).
   protected get resumenSolicitud(): string {
     const partes: string[] = [];
     if (this.form.interes) partes.push(`Interés: ${this.form.interes}`);
@@ -101,7 +99,7 @@ export class ContactoComponent {
       });
   }
 
-  /** Clear the form only after the submission was actually persisted. */
+  // Limpia el formulario solo tras persistirse realmente el envío.
   private resetForm(): void {
     this.form.name = '';
     this.form.email = '';

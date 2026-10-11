@@ -1,4 +1,4 @@
-/** Aggregated sales statistics mirrored from GET /api/v1/trends. */
+// Estadísticas de ventas agregadas replicadas desde GET /api/v1/trends.
 export interface TrendTotals {
   revenueCents: number;
   paidOrders: number;
@@ -6,14 +6,14 @@ export interface TrendTotals {
   averageOrderCents: number;
 }
 
-/** One day of the last-30-days sales series (UTC, yyyy-mm-dd). */
+// Un día de la serie de ventas de los últimos 30 días (UTC, yyyy-mm-dd).
 export interface TrendPoint {
   date: string;
   revenueCents: number;
   units: number;
 }
 
-/** A best-selling product, ranked by units sold. */
+// Producto más vendido, ordenado por unidades vendidas.
 export interface BestSeller {
   slug: string;
   title: string;

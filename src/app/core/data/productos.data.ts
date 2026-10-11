@@ -1,11 +1,6 @@
 import type { Producto } from '../models/producto.model';
 
-/**
- * Catálogo semilla tipado de VentaNova. Reutiliza los slugs del catálogo real
- * para que los enlaces al detalle de producto sigan siendo válidos, y añade
- * atributos comerciales (categoría, popularidad, destacado) que la portada
- * usa para sus indicadores interactivos.
- */
+// Catálogo semilla tipado de VentaNova con slugs reales y atributos comerciales para la portada.
 export const PRODUCTOS: readonly Producto[] = [
   {
     id: 'local-neo-tokyo-racer',

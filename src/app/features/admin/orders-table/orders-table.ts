@@ -6,7 +6,7 @@ import type { AdminOrder } from '../../../core/models/order.model';
 import { ORDER_STATUS_LABELS, orderStatusClass } from '../../../core/models/order.model';
 import { MoneyPipe } from '../../../shared/money.pipe';
 
-/** Read-only sales table shared by the ADMIN and WORKER panels. */
+// Tabla de ventas de solo lectura compartida por los paneles ADMIN y WORKER.
 @Component({
   selector: 'app-orders-table',
   templateUrl: './orders-table.html',

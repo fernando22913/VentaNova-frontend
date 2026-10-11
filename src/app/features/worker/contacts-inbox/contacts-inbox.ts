@@ -7,7 +7,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import type { ContactStatus, StaffContactMessage } from '../../../core/models/contact.model';
 import { CONTACT_STATUS_LABELS, contactStatusClass } from '../../../core/models/contact.model';
 
-/** Staff inbox: read contact submissions and record a reply. */
+// Bandeja del personal: lee los mensajes de contacto y registra una respuesta.
 @Component({
   selector: 'app-contacts-inbox',
   templateUrl: './contacts-inbox.html',

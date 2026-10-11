@@ -11,8 +11,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    // Order matters: refresh runs outermost so a retried request passes back
-    // through authInterceptor and picks up the new access token.
+    // El orden importa: refresh va más al exterior para que los reintentos usen el nuevo access token.
     provideHttpClient(withInterceptors([refreshInterceptor, authInterceptor, errorInterceptor])),
   ],
 };

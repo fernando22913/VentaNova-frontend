@@ -41,7 +41,7 @@ export class TendenciasComponent {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
-  /** Interacción: ventana temporal del gráfico (7, 14 o 30 días). */
+  // Interacción: ventana temporal del gráfico (7, 14 o 30 días).
   protected readonly rangeOptions = [7, 14, 30] as const;
   protected readonly rangeDays = signal(30);
 
@@ -82,7 +82,7 @@ export class TendenciasComponent {
     ];
   });
 
-  /** Serie recortada a la ventana seleccionada (computed). */
+  // Serie recortada a la ventana seleccionada (computed).
   protected readonly visibleSales = computed<TrendPoint[]>(() => {
     const sales = this.report()?.sales ?? [];
     return sales.slice(Math.max(0, sales.length - this.rangeDays()));
@@ -96,7 +96,7 @@ export class TendenciasComponent {
     Math.max(1, ...(this.report()?.bestSellers ?? []).map((seller) => seller.unitsSold)),
   );
 
-  /** Día de mayor ingreso dentro de la ventana. */
+  // Día de mayor ingreso dentro de la ventana.
   protected readonly bestDayLabel = computed(() => {
     const day = this.bestDay();
     return day && day.revenueCents > 0 ? this.dayLabel(day.date) : '—';
@@ -151,7 +151,7 @@ export class TendenciasComponent {
     void this.router.navigateByUrl('/catalog');
   }
 
-  /** Height of a daily bar as a % of the tallest day in the window. */
+  // Altura de una barra diaria en % del día más alto de la ventana.
   protected barHeight(cents: number): string {
     return `${Math.round((cents / this.maxDayRevenue()) * 100)}%`;
   }
@@ -160,7 +160,7 @@ export class TendenciasComponent {
     return `${Math.round((units / this.maxSellerUnits()) * 100)}%`;
   }
 
-  /** Clases del medallón de ranking (top 3 destacados). */
+  // Clases del medallón de ranking (top 3 destacados).
   protected rankClass(index: number): string {
     switch (index) {
       case 0:
@@ -174,13 +174,13 @@ export class TendenciasComponent {
     }
   }
 
-  /** Muestra ~6 marcas del eje para no saturar con 30 columnas. */
+  // Muestra ~6 marcas del eje para no saturar con 30 columnas.
   protected showTick(index: number, total: number): boolean {
     if (total <= 14) return true;
     return index % 5 === 0 || index === total - 1;
   }
 
-  /** Localized short label for a UTC `yyyy-mm-dd` key, e.g. "12 sep". */
+  // Etiqueta corta localizada para una clave UTC yyyy-mm-dd, p. ej. "12 sep".
   protected dayLabel(date: string): string {
     const [, month, day] = date.split('-');
     const monthIndex = Number(month) - 1;

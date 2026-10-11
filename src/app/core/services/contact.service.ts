@@ -6,11 +6,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import type { ContactMessageInput, ContactMessageResult, StaffContactMessage } from '../models/contact.model';
 
-/**
- * Contact data access. `sendMessage` is the public submission; the inbox
- * methods (`list`/`reply`) are staff-only (ADMIN/WORKER) and enforced
- * server-side.
- */
+// Acceso a datos de contacto; `sendMessage` es público, `list`/`reply` son solo staff (ADMIN/WORKER), verificado en el servidor.
 @Injectable({ providedIn: 'root' })
 export class ContactService {
   private readonly http = inject(HttpClient);

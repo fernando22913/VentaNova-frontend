@@ -4,11 +4,7 @@ import type { CartItem } from '../models/order.model';
 
 const STORAGE_KEY = 'ventanova.cart';
 
-/**
- * Client-side cart (blueprint ADR-06): the cart is UI state, persisted across
- * reloads in localStorage. The server is never involved until checkout, where
- * it recomputes every price. `subtotalCents`/`count` are computed signals.
- */
+// Carrito en el cliente (ADR-06): estado de UI persistido en localStorage; el servidor recalcula precios en el pago; subtotalCents/count son signals computados.
 @Injectable({ providedIn: 'root' })
 export class CartStore {
   private readonly itemsSignal = signal<CartItem[]>([]);
@@ -56,7 +52,7 @@ export class CartStore {
     this.persist();
   }
 
-  /** Payload for POST /orders — ids + quantities only; the server prices it. */
+  // Payload para POST /orders — solo ids + cantidades; el servidor calcula precios.
   toOrderItems(): { productId: string; quantity: number }[] {
     return this.itemsSignal().map((line) => ({
       productId: line.productId,

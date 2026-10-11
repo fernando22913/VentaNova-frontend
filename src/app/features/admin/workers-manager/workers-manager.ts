@@ -20,10 +20,7 @@ function emptyForm(): UserForm {
   return { name: '', email: '', password: '', role: 'WORKER' };
 }
 
-/**
- * ADMIN-only: provision staff accounts (WORKER/ADMIN) and review every
- * account. The backend rejects non-admins with 403.
- */
+// Solo ADMIN: crea cuentas del personal (WORKER/ADMIN) y revisa todas las cuentas; el backend rechaza a los no admin con 403.
 @Component({
   selector: 'app-workers-manager',
   templateUrl: './workers-manager.html',

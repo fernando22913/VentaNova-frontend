@@ -47,11 +47,7 @@ function emptyForm(): ProductForm {
   };
 }
 
-/**
- * Shared catalog manager for the ADMIN panel and the WORKER support panel.
- * Both roles may create/edit/archive products; the backend enforces the role
- * on every call.
- */
+// Gestor de catálogo compartido para los paneles ADMIN y WORKER; el backend aplica los roles.
 @Component({
   selector: 'app-catalog-manager',
   templateUrl: './catalog-manager.html',

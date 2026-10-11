@@ -8,10 +8,7 @@ export interface Toast {
   type: ToastType;
 }
 
-/**
- * Tiny signals-based toast queue. The error interceptor pushes HTTP failures;
- * forms can push success messages. Auto-dismissed after a few seconds.
- */
+// Cola de toasts pequeña basada en signals; el interceptor de errores añade fallos HTTP y los formularios mensajes de éxito; se cierran solos.
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   private readonly toastsSignal = signal<Toast[]>([]);

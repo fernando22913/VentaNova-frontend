@@ -29,7 +29,7 @@ const session = (access = 'access-1', refresh = 'refresh-1'): AuthResult => ({
   expires_in: 3600,
 });
 
-/** Lets the async refresh promise settle so the retry request is emitted. */
+// Deja asentar el promise de refresh async para que se emita la petición de reintento.
 const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 class StubAuthService {
@@ -150,7 +150,7 @@ describe('refreshInterceptor', () => {
 
     httpc.expectOne(url).flush({}, { status: 401, statusText: 'Unauthorized' });
     await tick();
-    // Retry also 401s — the interceptor must not refresh a second time.
+    // El reintento también da 401: el interceptor no debe refrescar una segunda vez.
     httpc.expectOne(url).flush({}, { status: 401, statusText: 'Unauthorized' });
     await tick();
 

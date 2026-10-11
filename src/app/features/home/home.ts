@@ -13,13 +13,7 @@ import type { PublicProduct } from '../../core/models/catalog.model';
 import { toCartItem } from '../../core/models/order.model';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 
-/**
- * Portada interactiva de VentaNova.
- *
- * Estado interactivo con `signal()`: las categorías que la persona marca como
- * de su interés. A partir de ellas, `computed()` deriva automáticamente las
- * recomendaciones y un indicador de exploración.
- */
+// Portada interactiva de VentaNova: signal() para intereses y computed() para recomendaciones.
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
@@ -33,10 +27,10 @@ export class HomeComponent {
   protected readonly categorias = this.productosService.getCategorias();
   protected readonly destacados = this.productosService.getDestacados();
 
-  /** Interacción 1 — signal(): categorías de interés marcadas por el visitante. */
+  // Interacción 1 — signal(): categorías de interés marcadas por el visitante.
   protected readonly intereses = signal<CategoriaVentaNova[]>([]);
 
-  /** Interacción 2 — computed(): recomendaciones derivadas de los intereses. */
+  // Interacción 2 — computed(): recomendaciones derivadas de los intereses.
   protected readonly recomendaciones = computed<PublicProduct[]>(() => {
     const seleccion = this.intereses();
     const base: readonly Producto[] =

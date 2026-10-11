@@ -10,17 +10,10 @@ import { catchError, from, switchMap, throwError } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
 import { isAuthEndpoint } from './auth-endpoints';
 
-/** Marks a request that has already been retried once after a refresh. */
+// Marca una petición ya reintentada una vez tras un refresh.
 const REFRESH_RETRIED = new HttpContextToken<boolean>(() => false);
 
-/**
- * Handles expired access tokens. On a 401 for a non-auth request it performs a
- * single refresh (deduplicated inside AuthStore), retries the original request
- * exactly once, and on failure clears the session and redirects to /login.
- *
- * Registered before `authInterceptor` so the retried request flows through it
- * again and picks up the freshly stored access token.
- */
+// Ante un 401 de una petición no-auth: refresca una vez, reintenta una vez; si no, limpia sesión y va a /login.
 export const refreshInterceptor: HttpInterceptorFn = (request, next) => {
   const store = inject(AuthStore);
   const router = inject(Router);

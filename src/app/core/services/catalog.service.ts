@@ -12,10 +12,7 @@ import type {
   PublicProductDetail,
 } from '../models/catalog.model';
 
-/**
- * Catalog data access. Typed Http calls; components bridge results into
- * signals with `toSignal()` or subscriptions (ADR-11: RxJS only here).
- */
+// Acceso a datos del catálogo; llamadas Http tipadas; los componentes puentean los resultados a signals (ADR-11: RxJS solo aquí).
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
   private readonly http = inject(HttpClient);

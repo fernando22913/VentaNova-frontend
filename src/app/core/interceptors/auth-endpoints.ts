@@ -1,4 +1,4 @@
-/** Auth endpoints that must never trigger access-token attachment or refresh. */
+// Endpoints de auth que nunca deben activar el envío de token ni el refresh.
 const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout'];
 
 export function isAuthEndpoint(url: string): boolean {
