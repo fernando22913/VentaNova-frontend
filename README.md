@@ -1,99 +1,75 @@
 # VentaNova — Frontend
 
-Angular 22 single-page application (standalone components + signals, Tailwind CSS v4)
-for the VentaNova digital storefront. This repository is the standalone frontend;
-the API lives in a separate repository.
+SPA en **Angular 22** (standalone components + signals, Tailwind CSS v4) para la tienda
+VentaNova. La API es un servicio aparte (ver el repo del backend).
 
-## Requirements
+## Requisitos
 
-- Node.js 24 LTS
-- npm (lockfile committed)
+- Node.js 24+
+- El backend corriendo (por defecto en `http://localhost:3000`)
 
-## Install dependencies
+## Levantar todo (rápido)
 
 ```bash
 npm ci
+npm start        # dev server en http://localhost:4200
 ```
 
-## Run locally
-
-```bash
-npm start
-```
-
-The dev server listens on `http://localhost:4200/` and reloads on changes. It uses the
-development environment (`src/environments/environment.development.ts`), which points at
-`http://localhost:3000/api/v1` — start the backend separately.
+`npm start` usa `src/environments/environment.development.ts`, que apunta a
+`http://localhost:3000/api/v1`. Recarga en caliente al guardar cambios.
 
 ## Build
 
 ```bash
-npm run build
+npm run build    # ng build (producción) -> dist/frontend/browser
+npm run watch    # build en modo desarrollo, sin servir
 ```
-
-`ng build` defaults to the **production** configuration (optimization + output hashing).
-Build output goes to `dist/frontend/browser`.
 
 ## Tests
 
-The runner is **vitest** via the `@angular/build:unit-test` builder (no Karma). In CI,
-`CI=true` keeps it from entering watch mode:
+Runner **vitest** (vía `@angular/build:unit-test`, sin Karma). Con `CI=true` no entra en
+modo watch:
 
 ```bash
 CI=true npm test
-```
-
-A single spec or directory:
-
-```bash
+# un solo spec:
 CI=true npm test -- --include=src/app/shared/money.pipe.spec.ts
 ```
 
-There is no frontend lint step (ESLint is backend-only).
+No hay lint en el frontend (ESLint es solo del backend).
 
-## Environment configuration
+## Vistas por rol
 
-| File | Purpose | API URL |
+La app muestra y protege las vistas según el rol de la sesión. Los guards son **solo UX**: el
+backend revalida el rol en cada request.
+
+| Rol | Vistas |
+|---|---|
+| Sin sesión (público) | Inicio, Catálogo, Producto, Tendencias, Contacto, Carrito, Login / Crear cuenta |
+| `CUSTOMER` | Biblioteca, Pedidos, Cuenta |
+| `WORKER` | Panel de soporte (`/worker`): Contactos, Catálogo, Ventas |
+| `ADMIN` | Panel de administración (`/admin`): Catálogo, Pedidos y Equipo (crear trabajadores) |
+
+El botón **Crear cuenta** siempre registra un `CUSTOMER`. Los trabajadores los crea un admin
+desde `/admin` → pestaña *Equipo*.
+
+## Entornos
+
+| Archivo | Se usa en | URL de API |
 |---|---|---|
-| `src/environments/environment.ts` | Production build (default) | `https://ventanova-api.onrender.com/api/v1` |
-| `src/environments/environment.development.ts` | `ng serve` / development | `http://localhost:3000/api/v1` |
+| `src/environments/environment.ts` | Build de producción | `https://ventanova-api.onrender.com/api/v1` |
+| `src/environments/environment.development.ts` | `npm start` | `http://localhost:3000/api/v1` |
 
-`angular.json` swaps the development file in via `fileReplacements` at serve time; the
-production build uses `environment.ts`. The production API URL is baked in at build time —
-there are no build-time environment variables.
+`angular.json` cambia el archivo con `fileReplacements` al servir. La URL de producción queda
+fijada en el build.
 
-## How it connects to the deployed API
+## Deploy (Netlify)
 
-- All requests go to `environment.apiUrl` (`/api/v1`).
-- The API is a short-lived Bearer **access** JWT paired with a rotating opaque **refresh**
-  token. `refreshInterceptor` transparently refreshes an expired access token once
-  (single-flight) and retries; on failure it clears the session and redirects to `/login`.
-- Route guards/interceptors are UX only — the backend re-verifies JWT and role on every
-  request.
-- CORS on the API allows exactly the Netlify production origin, so the deployed site URL
-  must match the backend's `CORS_ORIGIN`.
+`netlify.toml` maneja el deploy de producción:
 
-## Public pages added
+- **Build:** `npm ci && npm run build`
+- **Publish:** `dist/frontend/browser`
+- **SPA fallback:** `/* → /index.html` (para que rutas como `/library` sobrevivan al recargar)
 
-- **Tendencias** (`/tendencias`) — reads `GET /api/v1/trends` (`TrendsService`) and renders
-  summary cards, a 30-day revenue bar chart (pure CSS, no chart dependency) and a top-5
-  best-sellers list. Shows loading, error (with retry) and an "insufficient data" empty state
-  when there are no paid orders.
-- **Contacto** (`/contacto`) — a template-driven form using `FormsModule` + `[(ngModel)]`
-  (the app's existing form convention) for nombre/correo/asunto/mensaje. On submit it calls
-  `POST /api/v1/contact` (`ContactService`), disables the button while in flight, and only
-  on a successful (persisted) response shows the confirmation and resets the form. The
-  backend **does not send email** — the success wording says the message was registered.
-
-## Netlify deployment
-
-This repository is the production frontend. `netlify.toml` (repo root) drives the deploy:
-
-- **Build command:** `npm ci && npm run build`
-- **Publish directory:** `dist/frontend/browser`
-- **Node:** `24`
-- **SPA fallback:** `/* → /index.html` (status 200) so deep routes such as `/library` survive
-  a hard reload.
-
-After the first deploy, confirm the production URL matches the API's `CORS_ORIGIN` and, if
-it differs, update `src/environments/environment.ts` and redeploy.
+La URL de producción del frontend debe coincidir con el `CORS_ORIGIN` del backend. Si cambia,
+actualiza `src/environments/environment.ts` y vuelve a desplegar.
