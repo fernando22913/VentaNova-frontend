@@ -19,6 +19,9 @@ export class NavbarComponent {
 
   protected readonly isLoggedIn = this.store.isLoggedIn;
   protected readonly isAdmin = this.store.isAdmin;
+  protected readonly isWorker = this.store.isWorker;
+  protected readonly isStaff = this.store.isStaff;
+  protected readonly isCustomer = this.store.isCustomer;
   protected readonly currentUser = this.store.currentUser;
   protected readonly cartCount = this.cart.count;
   protected readonly menuOpen = signal(false);

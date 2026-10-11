@@ -43,4 +43,27 @@ describe('AdminService', () => {
     request.flush({ items: [{ id: 'o-1', userId: 'u-1', status: 'PAID' }] });
     expect((await promise)[0]?.id).toBe('o-1');
   });
+
+  it('creates a user via POST /admin/users and unwraps the user', async () => {
+    const promise = firstValueFrom(
+      service.createUser({
+        email: 'worker@test.dev',
+        name: 'Worker',
+        password: 'password123',
+        role: 'WORKER',
+      }),
+    );
+    const request = http.expectOne(`${environment.apiUrl}/admin/users`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toMatchObject({ role: 'WORKER' });
+    request.flush({ user: { id: 'u-1', email: 'worker@test.dev', role: 'WORKER' } });
+    expect((await promise).email).toBe('worker@test.dev');
+  });
+
+  it('unwraps the users envelope from GET /admin/users', async () => {
+    const promise = firstValueFrom(service.listUsers());
+    const request = http.expectOne(`${environment.apiUrl}/admin/users`);
+    request.flush({ items: [{ id: 'u-1', email: 'a@test.dev', role: 'WORKER' }] });
+    expect((await promise)[0]?.email).toBe('a@test.dev');
+  });
 });

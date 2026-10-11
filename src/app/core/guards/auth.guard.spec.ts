@@ -6,9 +6,9 @@ import { firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { AuthStore } from '../stores/auth.store';
-import { adminGuard, authGuard, guestGuard } from './auth.guard';
+import { adminGuard, authGuard, guestGuard, workerGuard } from './auth.guard';
 
-type Role = 'CUSTOMER' | 'ADMIN';
+type Role = 'CUSTOMER' | 'WORKER' | 'ADMIN';
 
 /** Configurable stub: the role it returns on login decides the session role. */
 let loginRole: Role = 'CUSTOMER';
@@ -119,6 +119,37 @@ describe('route guards', () => {
   it('adminGuard sends guests to the login screen', () => {
     setupStore();
     expect(TestBed.runInInjectionContext(() => adminGuard(route, routeState('/admin')))).not.toBe(
+      true,
+    );
+  });
+
+  it('workerGuard allows staff and rejects customers', async () => {
+    const store = await signInAs('WORKER');
+    expect(TestBed.runInInjectionContext(() => workerGuard(route, routeState('/worker')))).toBe(
+      true,
+    );
+    expect(TestBed.runInInjectionContext(() => adminGuard(route, routeState('/admin')))).not.toBe(
+      true,
+    );
+
+    store.logout();
+    loginRole = 'ADMIN';
+    await firstValueFrom(store.login({ email: 'user@example.com', password: 'secret123' }));
+    expect(TestBed.runInInjectionContext(() => workerGuard(route, routeState('/worker')))).toBe(
+      true,
+    );
+
+    store.logout();
+    loginRole = 'CUSTOMER';
+    await firstValueFrom(store.login({ email: 'user@example.com', password: 'secret123' }));
+    expect(TestBed.runInInjectionContext(() => workerGuard(route, routeState('/worker')))).not.toBe(
+      true,
+    );
+  });
+
+  it('workerGuard sends guests to the login screen', () => {
+    setupStore();
+    expect(TestBed.runInInjectionContext(() => workerGuard(route, routeState('/worker')))).not.toBe(
       true,
     );
   });

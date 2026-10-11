@@ -1,0 +1,60 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Operaciones</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Panel de soporte</h1>
+    <p class="mt-1.5 text-sm text-mist">
+      Atiende los contactos de los usuarios, revisa ventas y gestiona el catálogo.
+    </p>
+  </div>
+
+  <div
+    class="mt-6 flex flex-wrap gap-1 rounded-xl border border-ink-800 bg-ink-900/60 p-1"
+    role="tablist"
+    aria-label="Secciones de soporte"
+  >
+    <button
+      type="button"
+      role="tab"
+      class="nav-link flex-1 justify-center"
+      [class.nav-link-active]="tab() === 'contacts'"
+      [attr.aria-selected]="tab() === 'contacts'"
+      (click)="select('contacts')"
+    >
+      Contactos
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="nav-link flex-1 justify-center"
+      [class.nav-link-active]="tab() === 'catalog'"
+      [attr.aria-selected]="tab() === 'catalog'"
+      (click)="select('catalog')"
+    >
+      Catálogo
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="nav-link flex-1 justify-center"
+      [class.nav-link-active]="tab() === 'orders'"
+      [attr.aria-selected]="tab() === 'orders'"
+      (click)="select('orders')"
+    >
+      Ventas
+    </button>
+  </div>
+
+  <div class="mt-8">
+    @switch (tab()) {
+      @case ('contacts') {
+        <app-contacts-inbox />
+      }
+      @case ('catalog') {
+        <app-catalog-manager />
+      }
+      @case ('orders') {
+        <app-orders-table />
+      }
+    }
+  </div>
+</section>

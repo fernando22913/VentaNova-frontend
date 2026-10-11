@@ -1,4 +1,5 @@
 import type { ProductPlatform, ProductType, PublicProductDetail } from './catalog.model';
+import type { UserRole } from './auth.model';
 
 export type AdminProductStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 
@@ -30,3 +31,17 @@ export interface AdminProductQuery {
   page?: number;
   pageSize?: number;
 }
+
+/** Payload for POST /admin/users — the admin provisions staff accounts. */
+export interface CreateUserInput {
+  email: string;
+  name: string;
+  password: string;
+  role: UserRole;
+}
+
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+  CUSTOMER: 'Cliente',
+  WORKER: 'Trabajador',
+  ADMIN: 'Administrador',
+};

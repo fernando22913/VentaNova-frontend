@@ -37,3 +37,14 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   }
   return store.isAdmin() ? true : router.createUrlTree(['/']);
 };
+
+/** Requires a staff role (ADMIN or WORKER) for the support/operations panel. */
+export const workerGuard: CanActivateFn = (_route, state) => {
+  const store = inject(AuthStore);
+  const router = inject(Router);
+
+  if (!store.isLoggedIn()) {
+    return router.createUrlTree(['/login'], { queryParams: { next: state.url } });
+  }
+  return store.isStaff() ? true : router.createUrlTree(['/']);
+};

@@ -18,7 +18,7 @@
           <h2 class="mt-4 font-display text-lg font-bold text-cream">{{ user.name }}</h2>
           <p class="mt-0.5 text-sm text-mist">{{ user.email }}</p>
           <span class="badge mt-4 border-acid-400/40 bg-acid-400/10 text-acid-300">
-            {{ user.role === 'ADMIN' ? 'Administrador' : 'Cliente' }}
+            {{ roleLabel() }}
           </span>
         </div>
       </div>
@@ -52,6 +52,9 @@
         <div class="mt-6 grid gap-3 sm:grid-cols-3">
           <a routerLink="/library" class="btn btn-secondary btn-block">Mi biblioteca</a>
           <a routerLink="/orders" class="btn btn-secondary btn-block">Mis pedidos</a>
+          @if (isStaff()) {
+            <a routerLink="/worker" class="btn btn-secondary btn-block">Panel de soporte</a>
+          }
           @if (isAdmin()) {
             <a routerLink="/admin" class="btn btn-secondary btn-block">Panel admin</a>
           }

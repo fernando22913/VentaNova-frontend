@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { adminGuard, authGuard, guestGuard } from './core/guards/auth.guard';
+import { adminGuard, authGuard, guestGuard, workerGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -82,6 +82,12 @@ export const routes: Routes = [
     title: 'VentaNova — Administración',
     canActivate: [adminGuard],
     loadComponent: () => import('./features/admin/admin').then((m) => m.AdminPanelComponent),
+  },
+  {
+    path: 'worker',
+    title: 'VentaNova — Panel de soporte',
+    canActivate: [workerGuard],
+    loadComponent: () => import('./features/worker/worker').then((m) => m.WorkerPanelComponent),
   },
   {
     path: '**',

@@ -42,6 +42,13 @@ export class AuthStore {
     () => this.userSignal() !== null && this.accessTokenSignal() !== null,
   );
   readonly isAdmin = computed(() => this.userSignal()?.role === 'ADMIN');
+  readonly isWorker = computed(() => this.userSignal()?.role === 'WORKER');
+  /** Staff = ADMIN or WORKER: can use the support/operations panel. */
+  readonly isStaff = computed(() => {
+    const role = this.userSignal()?.role;
+    return role === 'ADMIN' || role === 'WORKER';
+  });
+  readonly isCustomer = computed(() => this.userSignal()?.role === 'CUSTOMER');
 
   constructor() {
     this.restoreSession();

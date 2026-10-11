@@ -46,4 +46,25 @@ describe('ContactService', () => {
     request.flush(result);
     expect(received).toEqual(result);
   });
+
+  it('unwraps the staff inbox envelope from GET /contacts', async () => {
+    let received: { id: string }[] | undefined;
+    service.list().subscribe((value) => (received = value));
+
+    const request = http.expectOne(`${environment.apiUrl}/contacts`);
+    expect(request.request.method).toBe('GET');
+    request.flush({ items: [{ id: 'msg-1', status: 'OPEN' }] });
+    expect(received?.[0]?.id).toBe('msg-1');
+  });
+
+  it('posts a reply to POST /contacts/:id/reply', () => {
+    let received: { status: string } | undefined;
+    service.reply('msg-1', 'Gracias por escribirnos').subscribe((value) => (received = value));
+
+    const request = http.expectOne(`${environment.apiUrl}/contacts/msg-1/reply`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ reply: 'Gracias por escribirnos' });
+    request.flush({ id: 'msg-1', status: 'RESOLVED' });
+    expect(received?.status).toBe('RESOLVED');
+  });
 });

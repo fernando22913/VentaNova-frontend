@@ -1,4 +1,4 @@
-export type UserRole = 'CUSTOMER' | 'ADMIN';
+export type UserRole = 'CUSTOMER' | 'WORKER' | 'ADMIN';
 
 /** Public user shape as returned by the API (`/auth/register|login|me`). */
 export interface PublicUser {

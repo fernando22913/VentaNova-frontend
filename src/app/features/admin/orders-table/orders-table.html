@@ -1,0 +1,52 @@
+<section aria-labelledby="orders-heading">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="eyebrow">Ventas</p>
+      <h2 id="orders-heading" class="mt-1 font-display text-xl font-bold text-cream">
+        Todos los pedidos
+      </h2>
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm" (click)="load()">Actualizar</button>
+  </div>
+
+  @if (loading()) {
+    <div class="mt-4 space-y-3" aria-busy="true" aria-label="Cargando pedidos">
+      @for (cell of [0, 1, 2]; track cell) {
+        <div class="skeleton h-14 rounded-xl"></div>
+      }
+    </div>
+  } @else {
+    <div class="surface mt-4 overflow-x-auto">
+      <table class="w-full min-w-[40rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-ink-800 text-xs uppercase tracking-wider text-ink-500">
+            <th class="px-5 py-3.5 font-semibold">Pedido</th>
+            <th class="px-5 py-3.5 font-semibold">Usuario</th>
+            <th class="px-5 py-3.5 font-semibold">Total</th>
+            <th class="px-5 py-3.5 font-semibold">Estado</th>
+            <th class="px-5 py-3.5 font-semibold">Fecha</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-800">
+          @for (order of orders(); track order.id) {
+            <tr class="transition hover:bg-ink-850/60">
+              <td class="px-5 py-4 font-mono text-xs text-mist">#{{ order.id.slice(0, 8) }}</td>
+              <td class="px-5 py-4 font-mono text-xs text-mist">#{{ order.userId.slice(0, 8) }}</td>
+              <td class="px-5 py-4 font-mono text-cream">{{ order.totalCents | money }}</td>
+              <td class="px-5 py-4">
+                <span class="badge" [class]="statusClass(order.status)">
+                  {{ statusLabels[order.status] }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-mist">{{ order.createdAt | date: 'short' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="px-5 py-12 text-center text-mist">Sin pedidos todavía.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

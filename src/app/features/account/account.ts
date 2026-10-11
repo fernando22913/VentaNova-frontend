@@ -3,6 +3,13 @@ import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthStore } from '../../core/stores/auth.store';
+import type { UserRole } from '../../core/models/auth.model';
+
+const ROLE_LABELS: Record<UserRole, string> = {
+  CUSTOMER: 'Cliente',
+  WORKER: 'Trabajador',
+  ADMIN: 'Administrador',
+};
 
 @Component({
   selector: 'app-account',
@@ -15,6 +22,12 @@ export class AccountComponent {
 
   protected readonly currentUser = this.store.currentUser;
   protected readonly isAdmin = this.store.isAdmin;
+  protected readonly isStaff = this.store.isStaff;
+
+  protected readonly roleLabel = computed(() => {
+    const role = this.store.currentUser()?.role;
+    return role ? ROLE_LABELS[role] : '';
+  });
 
   protected readonly initials = computed(() => {
     const name = this.store.currentUser()?.name?.trim() ?? '';

@@ -65,11 +65,14 @@
           >Tendencias</a
         >
         <a routerLink="/contacto" routerLinkActive="nav-link-active" class="nav-link">Contacto</a>
-        @if (isLoggedIn()) {
+        @if (isCustomer()) {
           <a routerLink="/library" routerLinkActive="nav-link-active" class="nav-link"
             >Biblioteca</a
           >
           <a routerLink="/orders" routerLinkActive="nav-link-active" class="nav-link">Pedidos</a>
+        }
+        @if (isStaff()) {
+          <a routerLink="/worker" routerLinkActive="nav-link-active" class="nav-link">Soporte</a>
         }
         @if (isAdmin()) {
           <a routerLink="/admin" routerLinkActive="nav-link-active" class="nav-link">Admin</a>
@@ -197,7 +200,7 @@
           (click)="closeMenu()"
           >Contacto</a
         >
-        @if (isLoggedIn()) {
+        @if (isCustomer()) {
           <a
             routerLink="/library"
             routerLinkActive="nav-link-active"
@@ -212,12 +215,23 @@
             (click)="closeMenu()"
             >Pedidos</a
           >
+        }
+        @if (isLoggedIn()) {
           <a
             routerLink="/account"
             routerLinkActive="nav-link-active"
             class="nav-link"
             (click)="closeMenu()"
             >Mi cuenta</a
+          >
+        }
+        @if (isStaff()) {
+          <a
+            routerLink="/worker"
+            routerLinkActive="nav-link-active"
+            class="nav-link"
+            (click)="closeMenu()"
+            >Soporte</a
           >
         }
         @if (isAdmin()) {

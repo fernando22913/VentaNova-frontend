@@ -6,12 +6,14 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import type { PagedResult } from '../models/catalog.model';
 import type { AdminOrder } from '../models/order.model';
+import type { PublicUser } from '../models/auth.model';
 import type {
   AdminProduct,
   AdminProductInput,
   AdminProductQuery,
   AdminProductStatus,
   AdminProductUpdate,
+  CreateUserInput,
 } from '../models/admin.model';
 
 /** Admin catalog + orders data access (ADMIN role enforced server-side). */
@@ -47,6 +49,20 @@ export class AdminService {
   listAllOrders(): Observable<AdminOrder[]> {
     return this.http
       .get<{ items: AdminOrder[] }>(`${this.baseUrl}/admin/orders`)
+      .pipe(map((response) => response.items));
+  }
+
+  /** ADMIN-only: provision a staff/customer account. */
+  createUser(input: CreateUserInput): Observable<PublicUser> {
+    return this.http
+      .post<{ user: PublicUser }>(`${this.baseUrl}/admin/users`, input)
+      .pipe(map((response) => response.user));
+  }
+
+  /** ADMIN-only: every account. */
+  listUsers(): Observable<PublicUser[]> {
+    return this.http
+      .get<{ items: PublicUser[] }>(`${this.baseUrl}/admin/users`)
       .pipe(map((response) => response.items));
   }
 }

@@ -1,0 +1,121 @@
+<section aria-labelledby="inbox-heading">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Soporte</p>
+      <h2 id="inbox-heading" class="mt-1 font-display text-xl font-bold text-cream">
+        Mensajes de contacto
+      </h2>
+      <p class="mt-1.5 text-sm text-mist">
+        {{ openCount() }} mensaje{{ openCount() === 1 ? '' : 's' }} pendiente{{
+          openCount() === 1 ? '' : 's'
+        }}
+        de respuesta.
+      </p>
+    </div>
+    <div class="flex flex-wrap items-end gap-3">
+      <label class="field">
+        <span class="field-label">Estado</span>
+        <select class="input w-40" [value]="statusFilter()" (change)="onStatusFilter($event)">
+          <option value="">Todos</option>
+          <option value="OPEN">Pendientes</option>
+          <option value="RESOLVED">Atendidos</option>
+        </select>
+      </label>
+      <button type="button" class="btn btn-secondary" (click)="load()">Actualizar</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="mt-4 space-y-3" aria-busy="true" aria-label="Cargando mensajes">
+      @for (cell of [0, 1, 2]; track cell) {
+        <div class="skeleton h-24 rounded-xl"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div
+      class="mt-4 rounded-xl border border-red-800/60 bg-red-950/30 px-4 py-3 text-sm text-red-300"
+      role="alert"
+    >
+      {{ error() }}
+      <button type="button" class="link ml-2" (click)="load()">Reintentar</button>
+    </div>
+  } @else {
+    <div class="mt-4 flex flex-col gap-3">
+      @for (message of filtered(); track message.id) {
+        <article class="surface p-5">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="font-medium text-cream">{{ message.subject }}</p>
+              <p class="mt-0.5 text-xs text-mist">
+                {{ message.name }} · <span class="font-mono">{{ message.email }}</span>
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="badge" [class]="statusClass(message.status)">
+                {{ statusLabels[message.status] }}
+              </span>
+              <span class="font-mono text-[11px] text-ink-500">
+                {{ message.createdAt | date: 'short' }}
+              </span>
+            </div>
+          </div>
+
+          <p class="mt-3 whitespace-pre-line text-sm text-mist">{{ message.message }}</p>
+
+          @if (message.status === 'RESOLVED' && message.reply) {
+            <div class="mt-3 rounded-lg border border-emerald-900/50 bg-emerald-950/20 p-3">
+              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-400">
+                Respuesta registrada
+              </p>
+              <p class="mt-1 whitespace-pre-line text-sm text-emerald-200">{{ message.reply }}</p>
+            </div>
+          }
+
+          @if (message.status === 'OPEN') {
+            @if (activeId() === message.id) {
+              <div class="mt-4">
+                <label class="field">
+                  <span class="field-label">Respuesta</span>
+                  <textarea
+                    class="input"
+                    rows="3"
+                    [value]="replyText()"
+                    (input)="onReplyInput($event)"
+                    placeholder="Escribe la respuesta al usuario…"
+                  ></textarea>
+                </label>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    [disabled]="sending()"
+                    (click)="sendReply(message)"
+                  >
+                    {{ sending() ? 'Enviando…' : 'Registrar respuesta' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    (click)="cancelReply()"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-outline btn-sm mt-4"
+                (click)="openReply(message)"
+              >
+                Responder
+              </button>
+            }
+          }
+        </article>
+      } @empty {
+        <div class="surface px-5 py-12 text-center text-mist">Sin mensajes que mostrar.</div>
+      }
+    </div>
+  }
+</section>

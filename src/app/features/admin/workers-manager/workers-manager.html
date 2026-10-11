@@ -1,0 +1,145 @@
+<section aria-labelledby="workers-heading">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Equipo</p>
+      <h2 id="workers-heading" class="mt-1 font-display text-xl font-bold text-cream">
+        Cuentas y trabajadores
+      </h2>
+      <p class="mt-1.5 text-sm text-mist">
+        Crea cuentas de trabajador para atender contactos y gestionar el catálogo.
+      </p>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      Nuevo trabajador
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <form class="animate-fade surface mt-6 p-5 sm:p-6" (ngSubmit)="save()" novalidate>
+      <div class="flex items-center justify-between">
+        <h3 class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+          Nueva cuenta
+        </h3>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm text-ink-500"
+          (click)="cancelForm()"
+          aria-label="Cerrar formulario"
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="mt-5 grid gap-4 sm:grid-cols-2">
+        <label class="field">
+          <span class="field-label">Nombre</span>
+          <input name="name" class="input" [(ngModel)]="form.name" required placeholder="Ana Pérez" />
+        </label>
+        <label class="field">
+          <span class="field-label">Correo</span>
+          <input
+            name="email"
+            type="email"
+            class="input"
+            [(ngModel)]="form.email"
+            required
+            placeholder="ana@ventanova.dev"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">Contraseña (mín. 8)</span>
+          <input
+            name="password"
+            type="password"
+            class="input"
+            [(ngModel)]="form.password"
+            required
+            autocomplete="new-password"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">Rol</span>
+          <select name="role" class="input" [(ngModel)]="form.role">
+            @for (role of roles; track role) {
+              <option [value]="role">{{ roleLabels[role] }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row">
+        <button type="button" class="btn btn-secondary flex-1 sm:flex-none" (click)="cancelForm()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary flex-1 sm:flex-none" [disabled]="saving()">
+          @if (saving()) {
+            Creando…
+          } @else {
+            Crear cuenta
+          }
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (loading()) {
+    <div class="mt-4 space-y-3" aria-busy="true" aria-label="Cargando cuentas">
+      @for (cell of [0, 1, 2]; track cell) {
+        <div class="skeleton h-14 rounded-xl"></div>
+      }
+    </div>
+  } @else {
+    <div class="surface mt-4 overflow-x-auto">
+      <table class="w-full min-w-[36rem] text-left text-sm">
+        <thead>
+          <tr class="border-b border-ink-800 text-xs uppercase tracking-wider text-ink-500">
+            <th class="px-5 py-3.5 font-semibold">Nombre</th>
+            <th class="px-5 py-3.5 font-semibold">Correo</th>
+            <th class="px-5 py-3.5 font-semibold">Rol</th>
+            <th class="px-5 py-3.5 font-semibold">Alta</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-800">
+          @for (user of users(); track user.id) {
+            <tr class="transition hover:bg-ink-850/60">
+              <td class="px-5 py-4 font-medium text-cream">{{ user.name }}</td>
+              <td class="px-5 py-4 font-mono text-xs text-mist">{{ user.email }}</td>
+              <td class="px-5 py-4">
+                <span class="badge border-ink-700 bg-ink-800 text-mist">
+                  {{ roleLabels[user.role] }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-mist">{{ user.createdAt | date: 'short' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-5 py-12 text-center text-mist">Sin cuentas todavía.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
