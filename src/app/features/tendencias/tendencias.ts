@@ -24,6 +24,8 @@ const MONTHS = [
 interface StatCard {
   label: string;
   value: string;
+  caption: string;
+  icon: 'revenue' | 'orders' | 'units' | 'ticket';
 }
 
 @Component({
@@ -39,6 +41,10 @@ export class TendenciasComponent {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
+  /** Interacción: ventana temporal del gráfico (7, 14 o 30 días). */
+  protected readonly rangeOptions = [7, 14, 30] as const;
+  protected readonly rangeDays = signal(30);
+
   protected readonly hasData = computed(() => {
     const report = this.report();
     return report !== null && report.totals.paidOrders > 0;
@@ -49,21 +55,73 @@ export class TendenciasComponent {
     if (!report) return [];
     const totals = report.totals;
     return [
-      { label: 'Ingresos', value: formatMoney(totals.revenueCents) },
-      { label: 'Pedidos pagados', value: String(totals.paidOrders) },
-      { label: 'Unidades vendidas', value: String(totals.unitsSold) },
-      { label: 'Ticket medio', value: formatMoney(totals.averageOrderCents) },
+      {
+        label: 'Ingresos',
+        value: formatMoney(totals.revenueCents),
+        caption: 'Total histórico',
+        icon: 'revenue',
+      },
+      {
+        label: 'Pedidos pagados',
+        value: String(totals.paidOrders),
+        caption: 'Órdenes confirmadas',
+        icon: 'orders',
+      },
+      {
+        label: 'Unidades vendidas',
+        value: String(totals.unitsSold),
+        caption: 'Licencias entregadas',
+        icon: 'units',
+      },
+      {
+        label: 'Ticket medio',
+        value: formatMoney(totals.averageOrderCents),
+        caption: 'Valor por pedido',
+        icon: 'ticket',
+      },
     ];
   });
 
-  private readonly maxDayRevenue = computed(() => {
+  /** Serie recortada a la ventana seleccionada (computed). */
+  protected readonly visibleSales = computed<TrendPoint[]>(() => {
     const sales = this.report()?.sales ?? [];
-    return Math.max(1, ...sales.map((point) => point.revenueCents));
+    return sales.slice(Math.max(0, sales.length - this.rangeDays()));
   });
 
-  private readonly maxSellerUnits = computed(() => {
-    const sellers = this.report()?.bestSellers ?? [];
-    return Math.max(1, ...sellers.map((seller) => seller.unitsSold));
+  private readonly maxDayRevenue = computed(() =>
+    Math.max(1, ...this.visibleSales().map((point) => point.revenueCents)),
+  );
+
+  private readonly maxSellerUnits = computed(() =>
+    Math.max(1, ...(this.report()?.bestSellers ?? []).map((seller) => seller.unitsSold)),
+  );
+
+  /** Día de mayor ingreso dentro de la ventana. */
+  protected readonly bestDayLabel = computed(() => {
+    const day = this.bestDay();
+    return day && day.revenueCents > 0 ? this.dayLabel(day.date) : '—';
+  });
+
+  protected readonly bestDayRevenue = computed(() => this.bestDay()?.revenueCents ?? 0);
+
+  protected readonly rangeRevenue = computed(() =>
+    this.visibleSales().reduce((sum, point) => sum + point.revenueCents, 0),
+  );
+
+  protected readonly rangeUnits = computed(() =>
+    this.visibleSales().reduce((sum, point) => sum + point.units, 0),
+  );
+
+  protected readonly rangeAverageRevenue = computed(() => {
+    const days = this.visibleSales().length;
+    return days === 0 ? 0 : Math.round(this.rangeRevenue() / days);
+  });
+
+  protected readonly topSellerShare = computed(() => {
+    const report = this.report();
+    const top = report?.bestSellers[0];
+    if (!report || !top || report.totals.revenueCents === 0) return 0;
+    return Math.round((top.revenueCents / report.totals.revenueCents) * 100);
   });
 
   constructor() {
@@ -85,17 +143,41 @@ export class TendenciasComponent {
     });
   }
 
+  protected setRange(days: number): void {
+    this.rangeDays.set(days);
+  }
+
   protected goToCatalog(): void {
     void this.router.navigateByUrl('/catalog');
   }
 
-  /** Height of a daily bar as a % of the tallest day. */
+  /** Height of a daily bar as a % of the tallest day in the window. */
   protected barHeight(cents: number): string {
     return `${Math.round((cents / this.maxDayRevenue()) * 100)}%`;
   }
 
   protected sellerWidth(units: number): string {
     return `${Math.round((units / this.maxSellerUnits()) * 100)}%`;
+  }
+
+  /** Clases del medallón de ranking (top 3 destacados). */
+  protected rankClass(index: number): string {
+    switch (index) {
+      case 0:
+        return 'border-acid-400/60 bg-acid-400/15 text-acid-300';
+      case 1:
+        return 'border-cream/25 bg-cream/10 text-cream';
+      case 2:
+        return 'border-coral-400/50 bg-coral-500/15 text-coral-400';
+      default:
+        return 'border-ink-700 bg-ink-850 text-ink-500';
+    }
+  }
+
+  /** Muestra ~6 marcas del eje para no saturar con 30 columnas. */
+  protected showTick(index: number, total: number): boolean {
+    if (total <= 14) return true;
+    return index % 5 === 0 || index === total - 1;
   }
 
   /** Localized short label for a UTC `yyyy-mm-dd` key, e.g. "12 sep". */
@@ -116,10 +198,18 @@ export class TendenciasComponent {
   protected sellerLabel(seller: BestSeller): string {
     return `${seller.title} · ${seller.unitsSold} unidades · ${formatMoney(seller.revenueCents)}`;
   }
+
+  private bestDay(): TrendPoint | null {
+    let best: TrendPoint | null = null;
+    for (const point of this.visibleSales()) {
+      if (best === null || point.revenueCents > best.revenueCents) best = point;
+    }
+    return best;
+  }
 }
 
 function formatMoney(cents: number): string {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
