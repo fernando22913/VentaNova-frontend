@@ -62,8 +62,7 @@
         </div>
         <p class="mt-4 text-sm leading-relaxed text-mist">
           {{ intereses().length }} de {{ categorias.length }} categorías marcadas como de tu
-          interés. Este indicador se calcula automáticamente con
-          <span class="font-mono text-acid-300">computed()</span>.
+          interés. Marca las que quieras: tus recomendaciones se actualizan al instante.
         </p>
       </div>
     </div>
@@ -78,8 +77,7 @@
         ¿Qué categorías te interesan?
       </h2>
       <p class="mt-2 max-w-xl text-sm text-mist">
-        Cada selección se guarda con <span class="font-mono text-acid-300">signal()</span> y las
-        recomendaciones de abajo se recalculan solas.
+        Elige las categorías que te interesen y verás al momento una selección recomendada para ti.
       </p>
     </div>
     @if (intereses().length > 0) {
