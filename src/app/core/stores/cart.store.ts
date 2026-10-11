@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 
 import type { CartItem } from '../models/order.model';
 
-const STORAGE_KEY = 'bytemarket.cart';
+const STORAGE_KEY = 'ventanova.cart';
 
 /**
  * Client-side cart (blueprint ADR-06): the cart is UI state, persisted across

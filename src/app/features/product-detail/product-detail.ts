@@ -69,7 +69,7 @@ export class ProductDetailComponent {
   }
 
   protected goToCatalog(): void {
-    void this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/catalog');
   }
 
   protected buyNow(): void {

@@ -73,6 +73,18 @@ there are no build-time environment variables.
 - CORS on the API allows exactly the Netlify production origin, so the deployed site URL
   must match the backend's `CORS_ORIGIN`.
 
+## Public pages added
+
+- **Tendencias** (`/tendencias`) — reads `GET /api/v1/trends` (`TrendsService`) and renders
+  summary cards, a 30-day revenue bar chart (pure CSS, no chart dependency) and a top-5
+  best-sellers list. Shows loading, error (with retry) and an "insufficient data" empty state
+  when there are no paid orders.
+- **Contacto** (`/contacto`) — a template-driven form using `FormsModule` + `[(ngModel)]`
+  (the app's existing form convention) for nombre/correo/asunto/mensaje. On submit it calls
+  `POST /api/v1/contact` (`ContactService`), disables the button while in flight, and only
+  on a successful (persisted) response shows the confirmation and resets the form. The
+  backend **does not send email** — the success wording says the message was registered.
+
 ## Netlify deployment
 
 This repository is the production frontend. `netlify.toml` (repo root) drives the deploy:

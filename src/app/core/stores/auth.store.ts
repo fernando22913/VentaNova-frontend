@@ -5,7 +5,7 @@ import { firstValueFrom, map, tap } from 'rxjs';
 import type { AuthResult, LoginInput, PublicUser, RegisterInput } from '../models/auth.model';
 import { AuthService } from '../services/auth.service';
 
-const STORAGE_KEY = 'bytemarket.session';
+const STORAGE_KEY = 'ventanova.session';
 
 interface StoredSession {
   user: PublicUser;

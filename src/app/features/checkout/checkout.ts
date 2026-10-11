@@ -32,8 +32,8 @@ export class CheckoutComponent {
 
   protected card: CardDetails = { cardName: '', cardNumber: '', expiry: '', cvc: '' };
   protected submitted = false;
-  protected loading = false;
-  protected error: string | null = null;
+  protected readonly loading = signal(false);
+  protected readonly error = signal<string | null>(null);
 
   protected readonly granted = signal<GrantedEntitlement[] | null>(null);
   protected readonly declined = signal(false);
@@ -60,8 +60,8 @@ export class CheckoutComponent {
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
 
     this.orders.createOrder(this.cart.toOrderItems()).subscribe({
       next: (order) => this.pay(order.id),
@@ -70,7 +70,7 @@ export class CheckoutComponent {
   }
 
   protected resetError(): void {
-    this.error = null;
+    this.error.set(null);
   }
 
   protected async copyKey(key: string): Promise<void> {
@@ -89,7 +89,7 @@ export class CheckoutComponent {
   private pay(orderId: string): void {
     this.orders.payOrder(orderId, { ...this.card }).subscribe({
       next: (result) => {
-        this.loading = false;
+        this.loading.set(false);
         if (result.order.status === 'PAID') {
           this.cart.clear();
           this.granted.set(result.entitlements);
@@ -103,8 +103,8 @@ export class CheckoutComponent {
   }
 
   private failWith(error: unknown): void {
-    this.loading = false;
-    this.error = messageFrom(error);
+    this.loading.set(false);
+    this.error.set(messageFrom(error));
   }
 }
 

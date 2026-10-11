@@ -5,6 +5,11 @@ import { adminGuard, authGuard, guestGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
+    title: 'VentaNova — Inicio',
+    loadComponent: () => import('./features/home/home').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'catalog',
     title: 'VentaNova — Catálogo',
     loadComponent: () => import('./features/catalog/catalog').then((m) => m.CatalogComponent),
   },
@@ -13,6 +18,16 @@ export const routes: Routes = [
     title: 'VentaNova — Producto',
     loadComponent: () =>
       import('./features/product-detail/product-detail').then((m) => m.ProductDetailComponent),
+  },
+  {
+    path: 'tendencias',
+    title: 'VentaNova — Tendencias',
+    loadComponent: () => import('./features/tendencias/tendencias').then((m) => m.TendenciasComponent),
+  },
+  {
+    path: 'contacto',
+    title: 'VentaNova — Contacto',
+    loadComponent: () => import('./features/contacto/contacto').then((m) => m.ContactoComponent),
   },
   {
     path: 'cart',

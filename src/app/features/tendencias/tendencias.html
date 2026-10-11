@@ -1,0 +1,144 @@
+<section class="mx-auto max-w-6xl px-4 py-8">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Tendencias</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-cream">Lo más vendido en VentaNova</h1>
+    <p class="mt-1.5 text-sm text-mist">
+      Estadísticas agregadas calculadas a partir de los pedidos pagados del catálogo.
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="mt-8 space-y-6" aria-busy="true" aria-label="Cargando tendencias">
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        @for (cell of [0, 1, 2, 3]; track cell) {
+          <div class="surface p-5">
+            <div class="skeleton h-3 w-2/3"></div>
+            <div class="skeleton mt-3 h-8 w-full"></div>
+          </div>
+        }
+      </div>
+      <div class="surface p-5">
+        <div class="skeleton h-4 w-40"></div>
+        <div class="skeleton mt-6 h-40 w-full"></div>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="error"
+        title="No pudimos cargar las tendencias"
+        [message]="error() ?? ''"
+        actionLabel="Reintentar"
+        (action)="load()"
+      />
+    </div>
+  } @else if (!hasData()) {
+    <div class="mt-8">
+      <app-state-panel
+        variant="empty"
+        title="Todavía no hay suficientes datos"
+        message="Las tendencias se calculan con pedidos pagados reales. En cuanto haya suficientes ventas, verás aquí ingresos, lo más vendido y la evolución diaria."
+        actionLabel="Explorar catálogo"
+        (action)="goToCatalog()"
+      />
+    </div>
+  } @else {
+    <dl class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      @for (stat of statCards(); track stat.label) {
+        <div class="surface p-4 sm:p-5">
+          <dt class="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-500">
+            {{ stat.label }}
+          </dt>
+          <dd class="mt-2 truncate font-display text-2xl font-extrabold text-cream sm:text-3xl">
+            {{ stat.value }}
+          </dd>
+        </div>
+      }
+    </dl>
+
+    <div class="mt-8 overflow-hidden rounded-2xl border border-ink-800 bg-ink-900 p-5 sm:p-6">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="font-display text-lg font-bold text-cream">Ventas · últimos 30 días</h2>
+        <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-500">
+          Ingresos diarios
+        </p>
+      </div>
+
+      <div
+        class="mt-6 flex h-40 items-end gap-1 sm:h-48"
+        role="list"
+        aria-label="Ingresos diarios de los últimos 30 días"
+      >
+        @for (point of report()?.sales ?? []; track point.date) {
+          <div
+            class="group relative flex h-full flex-1 flex-col justify-end"
+            role="listitem"
+          >
+            <div
+              class="w-full rounded-t-sm bg-acid-400/80 transition hover:bg-acid-400"
+              [style.height.%]="barHeight(point.revenueCents)"
+              [style.min-height.px]="point.revenueCents > 0 ? 2 : 0"
+              [attr.title]="barTooltip(point)"
+              [attr.aria-label]="barTooltip(point)"
+            ></div>
+          </div>
+        }
+      </div>
+
+      <div class="mt-2 flex gap-1" aria-hidden="true">
+        @for (point of report()?.sales ?? []; track point.date) {
+          <span class="flex-1 text-center font-mono text-[9px] leading-none text-ink-500">
+            {{ dayNumber(point.date) }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="mt-8 overflow-hidden rounded-2xl border border-ink-800 bg-ink-900 p-5 sm:p-6">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="font-display text-lg font-bold text-cream">Los más vendidos</h2>
+        <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-500">Por unidades</p>
+      </div>
+
+      @if ((report()?.bestSellers.length ?? 0) === 0) {
+        <p class="mt-4 text-sm text-mist">
+          Aún no hay suficientes productos vendidos para armar la lista.
+        </p>
+      } @else {
+        <ol class="mt-5 space-y-4">
+          @for (seller of report()?.bestSellers ?? []; track seller.slug) {
+            <li>
+              <a
+                routerLink="/catalog/{{ seller.slug }}"
+                class="group block"
+                [attr.aria-label]="sellerLabel(seller)"
+              >
+                <div class="flex items-baseline gap-3">
+                  <span class="font-mono text-xs text-ink-500">{{ $index + 1 }}</span>
+                  <span class="min-w-0 flex-1 truncate text-sm font-semibold text-cream group-hover:text-acid-300">
+                    {{ seller.title }}
+                  </span>
+                  <span class="shrink-0 font-mono text-xs text-ink-500">
+                    {{ seller.unitsSold }} uds
+                  </span>
+                  <span class="shrink-0 font-mono text-xs text-acid-300">
+                    {{ seller.revenueCents | money }}
+                  </span>
+                </div>
+                <div
+                  class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink-800"
+                  role="presentation"
+                >
+                  <div
+                    class="h-full rounded-full bg-acid-400/70 transition group-hover:bg-acid-400"
+                    [style.width.%]="sellerWidth(seller.unitsSold)"
+                  ></div>
+                </div>
+              </a>
+            </li>
+          }
+        </ol>
+      }
+    </div>
+  }
+</section>

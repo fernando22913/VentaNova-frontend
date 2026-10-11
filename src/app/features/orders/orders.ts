@@ -25,7 +25,7 @@ export class OrdersComponent {
   protected readonly statusClass = orderStatusClass;
 
   protected goToCatalog(): void {
-    void this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/catalog');
   }
 
   constructor() {

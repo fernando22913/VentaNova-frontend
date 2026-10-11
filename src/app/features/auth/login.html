@@ -102,7 +102,7 @@
           </label>
 
           <div aria-live="polite">
-            @if (error) {
+            @if (error()) {
               <div
                 class="flex items-start gap-3 rounded-lg border border-red-800/60 bg-red-950/40 px-3.5 py-3 text-sm text-red-300"
                 role="alert"
@@ -121,13 +121,13 @@
                     d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
                   />
                 </svg>
-                <p class="leading-relaxed">{{ error }}</p>
+                <p class="leading-relaxed">{{ error() }}</p>
               </div>
             }
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
-            @if (loading) {
+          <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading()">
+            @if (loading()) {
               <svg
                 class="h-4 w-4 animate-spin"
                 viewBox="0 0 24 24"

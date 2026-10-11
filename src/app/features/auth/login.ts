@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -20,8 +20,8 @@ export class LoginComponent {
   protected email = '';
   protected password = '';
   protected submitted = false;
-  protected error: string | null = null;
-  protected loading = false;
+  protected readonly error = signal<string | null>(null);
+  protected readonly loading = signal(false);
 
   protected onSubmit(): void {
     this.submitted = true;
@@ -34,16 +34,16 @@ export class LoginComponent {
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
     this.store.login({ email: this.email.trim(), password: this.password }).subscribe({
       next: () => {
         const next = this.route.snapshot.queryParamMap.get('next');
         void this.router.navigateByUrl(next ?? '/');
       },
       error: () => {
-        this.error = 'Correo o contraseña incorrectos.';
-        this.loading = false;
+        this.error.set('Correo o contraseña incorrectos.');
+        this.loading.set(false);
       },
     });
   }

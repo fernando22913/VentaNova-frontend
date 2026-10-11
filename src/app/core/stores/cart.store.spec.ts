@@ -18,7 +18,7 @@ const product = (id: string, priceCents: number): PublicProduct => ({
   updatedAt: '2026-10-06T00:00:00.000Z',
 });
 
-const STORAGE_KEY = 'bytemarket.cart';
+const STORAGE_KEY = 'ventanova.cart';
 
 describe('CartStore', () => {
   let store: CartStore;

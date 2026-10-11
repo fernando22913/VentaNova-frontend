@@ -19,7 +19,7 @@ export class CartComponent {
   protected readonly isEmpty = this.cart.isEmpty;
 
   protected goToCatalog(): void {
-    void this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/catalog');
   }
 
   protected setQuantity(productId: string, event: Event): void {

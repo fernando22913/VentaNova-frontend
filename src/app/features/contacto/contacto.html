@@ -1,0 +1,230 @@
+<section class="relative overflow-hidden px-4 py-12">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute -left-32 -top-40 h-96 w-96 rounded-full bg-acid-400/10 blur-3xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto w-full max-w-2xl py-4">
+    <div class="animate-rise surface overflow-hidden">
+      <div class="border-b border-ink-800 bg-ink-900 px-6 py-5">
+        <p class="eyebrow">Contacto</p>
+        <h1 class="mt-2 font-display text-2xl font-extrabold text-cream">Habla con VentaNova</h1>
+        <p class="mt-1 text-sm text-mist">
+          Pregúntanos por un producto, una licencia o un pedido. Tu mensaje queda registrado en
+          nuestro sistema de soporte.
+        </p>
+      </div>
+
+      <div class="p-6 sm:p-8">
+        <div aria-live="polite">
+          @let msg = sent();
+          @if (msg) {
+            <div
+              class="flex items-start gap-3 rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3.5 py-3 text-sm text-emerald-300"
+              role="status"
+            >
+              <svg
+                class="mt-0.5 h-4 w-4 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <div class="flex-1 leading-relaxed">
+                <p class="font-semibold text-cream">Mensaje enviado</p>
+                <p>
+                  Gracias, {{ msg.name }}. Hemos recibido «{{ msg.subject }}» y tu mensaje
+                  ya está en nuestra bandeja de soporte.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm shrink-0"
+                (click)="dismissSuccess()"
+              >
+                Enviar otro
+              </button>
+            </div>
+          } @else if (error()) {
+            <div
+              class="flex items-start gap-3 rounded-lg border border-red-800/60 bg-red-950/40 px-3.5 py-3 text-sm text-red-300"
+              role="alert"
+            >
+              <svg
+                class="mt-0.5 h-4 w-4 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <path d="M12 9v4M12 17h.01" />
+                <path
+                  d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
+                />
+              </svg>
+              <p class="leading-relaxed">{{ error() }}</p>
+            </div>
+          }
+        </div>
+
+        @if (!sent()) {
+          <form class="mt-6 space-y-4" (ngSubmit)="onSubmit()" novalidate>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="field">
+                <span class="field-label">Nombre *</span>
+                <input
+                  #nameInput
+                  type="text"
+                  name="name"
+                  class="input"
+                  [class.input-invalid]="submitted() && !form.name.trim()"
+                  [(ngModel)]="form.name"
+                  required
+                  maxlength="80"
+                  autocomplete="name"
+                  placeholder="Tu nombre"
+                  [attr.aria-invalid]="submitted() && !form.name.trim()"
+                  [attr.aria-describedby]="submitted() && !form.name.trim() ? 'name-error' : null"
+                />
+                @if (submitted() && !form.name.trim()) {
+                  <span id="name-error" class="field-error" role="alert"
+                    >Introduce tu nombre.</span
+                  >
+                }
+              </label>
+
+              <label class="field">
+                <span class="field-label">Correo electrónico *</span>
+                <input
+                  #emailInput
+                  type="email"
+                  name="email"
+                  class="input"
+                  [class.input-invalid]="invalidEmail()"
+                  [(ngModel)]="form.email"
+                  required
+                  maxlength="254"
+                  autocomplete="email"
+                  placeholder="tu@correo.com"
+                  [attr.aria-invalid]="invalidEmail()"
+                  [attr.aria-describedby]="invalidEmail() ? 'email-error' : null"
+                />
+                @if (submitted() && !form.email) {
+                  <span id="email-error" class="field-error" role="alert"
+                    >Introduce tu correo.</span
+                  >
+                } @else if (invalidEmail()) {
+                  <span id="email-error" class="field-error" role="alert"
+                    >Introduce un correo válido.</span
+                  >
+                }
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Asunto *</span>
+              <input
+                #subjectInput
+                type="text"
+                name="subject"
+                class="input"
+                [class.input-invalid]="submitted() && !form.subject.trim()"
+                [(ngModel)]="form.subject"
+                required
+                maxlength="120"
+                placeholder="Sobre qué producto o pedido nos escribes"
+                [attr.aria-invalid]="submitted() && !form.subject.trim()"
+                [attr.aria-describedby]="submitted() && !form.subject.trim() ? 'subject-error' : null"
+              />
+              @if (submitted() && !form.subject.trim()) {
+                <span id="subject-error" class="field-error" role="alert"
+                  >Introduce un asunto.</span
+                >
+              }
+            </label>
+
+            <label class="field">
+              <span class="field-label">Producto o servicio de interés</span>
+              <select name="interes" class="input" [(ngModel)]="form.interes">
+                <option value="">Selecciona una categoría</option>
+                @for (interes of intereses; track interes) {
+                  <option [value]="interes">{{ interes }}</option>
+                }
+              </select>
+              <span class="field-hint">Nos ayuda a dirigir tu solicitud al equipo adecuado.</span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Mensaje *</span>
+              <textarea
+                #messageInput
+                name="message"
+                class="input min-h-32 resize-y"
+                [class.input-invalid]="submitted() && !form.message.trim()"
+                [(ngModel)]="form.message"
+                required
+                maxlength="2000"
+                rows="6"
+                placeholder="Cuéntanos en qué podemos ayudarte"
+                [attr.aria-invalid]="submitted() && !form.message.trim()"
+                [attr.aria-describedby]="submitted() && !form.message.trim() ? 'message-error' : null"
+              ></textarea>
+              <span class="field-hint">Máximo 2000 caracteres.</span>
+              @if (submitted() && !form.message.trim()) {
+                <span id="message-error" class="field-error" role="alert"
+                  >Escribe un mensaje.</span
+                >
+              }
+            </label>
+
+            @if (resumenSolicitud || caracteresMensaje > 0) {
+              <div
+                class="rounded-lg border border-ink-800 bg-ink-950/60 px-3.5 py-3 text-xs text-mist"
+                aria-live="polite"
+              >
+                <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-500">
+                  Resumen de tu solicitud
+                </p>
+                @if (resumenSolicitud) {
+                  <p class="mt-1 text-cream">{{ resumenSolicitud }}</p>
+                }
+                <p class="mt-1 font-mono">{{ caracteresMensaje }}/2000 caracteres</p>
+              </div>
+            }
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg btn-block"
+              [disabled]="submitting()"
+            >
+              @if (submitting()) {
+                <svg
+                  class="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3a9 9 0 1 0 9 9" />
+                </svg>
+                Enviando…
+              } @else {
+                Enviar mensaje
+              }
+            </button>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</section>

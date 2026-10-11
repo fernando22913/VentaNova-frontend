@@ -27,7 +27,7 @@ export class LibraryComponent {
   protected readonly typeLabels = PRODUCT_TYPE_LABELS;
 
   protected goToCatalog(): void {
-    void this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/catalog');
   }
 
   constructor() {

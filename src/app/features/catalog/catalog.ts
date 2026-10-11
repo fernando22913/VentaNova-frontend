@@ -28,6 +28,9 @@ import { PaginationComponent } from '../../shared/pagination/pagination';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 import { StatePanelComponent } from '../../shared/state-panel/state-panel';
 
+/** El backend limita pageSize a 60; el catálogo semilla cabe en una carga. */
+const FETCH_PAGE_SIZE = 60;
+
 @Component({
   selector: 'app-catalog',
   templateUrl: './catalog.html',
@@ -45,7 +48,7 @@ export class CatalogComponent {
 
   protected readonly pageSize = 12;
 
-  // Filter UI state (signals) — drives every request.
+  // Filter UI state (signals) — the source of truth for the derived results.
   protected readonly searchTerm = signal('');
   protected readonly categorySlug = signal('');
   protected readonly platform = signal<ProductPlatform | ''>('');
@@ -54,16 +57,61 @@ export class CatalogComponent {
   protected readonly maxPrice = signal('');
   protected readonly page = signal(1);
 
-  // Results.
-  protected readonly products = signal<PublicProduct[]>([]);
-  protected readonly total = signal(0);
+  // Full dataset loaded once from the service; filtering happens in the browser.
+  protected readonly allProducts = signal<PublicProduct[]>([]);
   protected readonly categories = signal<Category[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
+  /**
+   * Visible products — `computed()` recalculates this set automatically every
+   * time a search term, category, platform, price or sort signal changes.
+   */
+  protected readonly filteredProducts = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    const categorySlug = this.categorySlug();
+    const categoryId = categorySlug
+      ? this.categories().find((category) => category.slug === categorySlug)?.id
+      : undefined;
+    const platform = this.platform();
+    const min = toCents(this.minPrice());
+    const max = toCents(this.maxPrice());
+
+    const matches = this.allProducts().filter((product) => {
+      if (categoryId && product.categoryId !== categoryId) return false;
+      if (platform && product.platform !== platform) return false;
+      if (min !== undefined && product.priceCents < min) return false;
+      if (max !== undefined && product.priceCents > max) return false;
+      if (term) {
+        const haystack = `${product.title} ${product.summary}`.toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+      return true;
+    });
+
+    return [...matches].sort((a, b) => {
+      switch (this.sortBy()) {
+        case 'price_asc':
+          return a.priceCents - b.priceCents;
+        case 'price_desc':
+          return b.priceCents - a.priceCents;
+        case 'title':
+          return a.title.localeCompare(b.title, 'es');
+        default:
+          return b.createdAt.localeCompare(a.createdAt);
+      }
+    });
+  });
+
+  protected readonly total = computed(() => this.filteredProducts().length);
   protected readonly pageCount = computed(() =>
     Math.max(1, Math.ceil(this.total() / this.pageSize)),
   );
+  protected readonly pagedProducts = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.filteredProducts().slice(start, start + this.pageSize);
+  });
+
   protected readonly platforms = PRODUCT_PLATFORMS;
   protected readonly platformLabels = PRODUCT_PLATFORM_LABELS;
   protected readonly sorts = PRODUCT_SORTS;
@@ -91,14 +139,15 @@ export class CatalogComponent {
     this.load();
   }
 
+  /** Loads every published product once; the visible set is derived locally. */
   protected load(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.catalog.searchProducts(this.buildQuery()).subscribe({
-      next: ({ items, total }) => {
-        this.products.set(items);
-        this.total.set(total);
+    const query: ProductQuery = { sort: 'newest', page: 1, pageSize: FETCH_PAGE_SIZE };
+    this.catalog.searchProducts(query).subscribe({
+      next: ({ items }) => {
+        this.allProducts.set(items);
         this.loading.set(false);
       },
       error: () => {
@@ -108,53 +157,39 @@ export class CatalogComponent {
     });
   }
 
-  protected applySearch(): void {
-    this.page.set(1);
-    this.load();
-  }
-
   protected onSearchInput(event: Event): void {
     this.searchTerm.set((event.target as HTMLInputElement).value);
-  }
-
-  protected onSearchKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') this.applySearch();
+    this.page.set(1);
   }
 
   protected setCategory(slug: string): void {
     this.categorySlug.set(slug);
     this.page.set(1);
-    this.load();
   }
 
   protected setPlatform(event: Event): void {
     this.platform.set((event.target as HTMLSelectElement).value as ProductPlatform | '');
     this.page.set(1);
-    this.load();
   }
 
   protected setSort(event: Event): void {
     this.sortBy.set((event.target as HTMLSelectElement).value as ProductSort);
     this.page.set(1);
-    this.load();
   }
 
   protected setMinPrice(event: Event): void {
     this.minPrice.set((event.target as HTMLInputElement).value);
     this.page.set(1);
-    this.load();
   }
 
   protected setMaxPrice(event: Event): void {
     this.maxPrice.set((event.target as HTMLInputElement).value);
     this.page.set(1);
-    this.load();
   }
 
   protected goToPage(page: number): void {
     if (page < 1 || page > this.pageCount()) return;
     this.page.set(page);
-    this.load();
   }
 
   protected resetFilters(): void {
@@ -165,26 +200,11 @@ export class CatalogComponent {
     this.maxPrice.set('');
     this.sortBy.set('newest');
     this.page.set(1);
-    this.load();
   }
 
   protected onAddToCart(product: PublicProduct): void {
     this.cart.add(toCartItem(product));
     this.toasts.show(`"${product.title}" añadido al carrito`, 'success');
-  }
-
-  private buildQuery(): ProductQuery {
-    const query: ProductQuery = { sort: this.sortBy(), page: this.page(), pageSize: this.pageSize };
-    const search = this.searchTerm().trim();
-    if (search) query.search = search;
-    if (this.categorySlug()) query.category = this.categorySlug();
-    const platform = this.platform();
-    if (platform) query.platform = platform;
-    const min = toCents(this.minPrice());
-    const max = toCents(this.maxPrice());
-    if (min !== undefined) query.minPrice = String(min);
-    if (max !== undefined) query.maxPrice = String(max);
-    return query;
   }
 }
 

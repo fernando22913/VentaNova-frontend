@@ -55,7 +55,7 @@ function configureStore() {
 }
 
 describe('AuthStore', () => {
-  const storageKey = 'bytemarket.session';
+  const storageKey = 'ventanova.session';
 
   beforeEach(() => {
     localStorage.removeItem(storageKey);

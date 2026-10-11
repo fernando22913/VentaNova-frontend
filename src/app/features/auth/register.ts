@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -23,8 +23,8 @@ export class RegisterComponent {
   protected password = '';
   protected confirmPassword = '';
   protected submitted = false;
-  protected error: string | null = null;
-  protected loading = false;
+  protected readonly error = signal<string | null>(null);
+  protected readonly loading = signal(false);
 
   protected onSubmit(): void {
     this.submitted = true;
@@ -45,15 +45,15 @@ export class RegisterComponent {
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
     this.store
       .register({ email: this.email.trim(), name: this.name.trim(), password: this.password })
       .subscribe({
         next: () => void this.router.navigateByUrl('/'),
         error: () => {
-          this.error = 'No se pudo crear la cuenta. Revisa el correo e inténtalo de nuevo.';
-          this.loading = false;
+          this.error.set('No se pudo crear la cuenta. Revisa el correo e inténtalo de nuevo.');
+          this.loading.set(false);
         },
       });
   }

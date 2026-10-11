@@ -57,7 +57,6 @@
             class="input pl-9"
             [value]="searchTerm()"
             (input)="onSearchInput($event)"
-            (keydown)="onSearchKeydown($event)"
             placeholder="Título o descripción…"
             aria-label="Buscar productos"
           />
@@ -146,7 +145,7 @@
         (action)="load()"
       />
     </div>
-  } @else if (products().length === 0) {
+  } @else if (total() === 0) {
     <div class="mt-8">
       <app-state-panel
         variant="empty"
@@ -180,7 +179,7 @@
     </div>
 
     <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      @for (product of products(); track product.id; let i = $index) {
+      @for (product of pagedProducts(); track product.id; let i = $index) {
         <app-product-card
           class="animate-rise"
           [style.animation-delay.ms]="i * 35"
